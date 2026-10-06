@@ -62,7 +62,15 @@ export type Content = {
     theme: { bg: string; text: string; accent: string };
     demoPhotos: boolean;
   };
-  home: { tagline: string; heroPhoto: Photo | null; featured: string };
+  home: {
+    tagline: string;
+    heroPhoto: Photo | null;
+    heroCaption: string;           // petite légende sur la photo (ex. « Paris, 2025 »)
+    heroSide: 'left' | 'right';    // côté du texte
+    heroOpacity: number;           // opacité du voile derrière le texte, 0–100
+    cards: { photo: Photo | null; video: Photo | null; creations: Photo | null };
+    featured: string;
+  };
   videos: VideoCategory[];
   galleries: Gallery[];
   creations: Creation[];

@@ -1,4 +1,5 @@
 @import '@fontsource-variable/inter';
+@import '@fontsource/bebas-neue/400.css';
 
 :root {
   --a-bg: #f6f6f4;
@@ -195,3 +196,32 @@ img { display: block; max-width: 100%; }
   .photo-grid .icon { opacity: 1; }
   .status span:last-child { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
+
+/* ---------- Accueil : sélecteur et aperçu du hero ---------- */
+.seg { display: inline-flex; border: 1px solid var(--a-line-strong); border-radius: 8px; overflow: hidden; width: fit-content; }
+.seg button { border: 0; background: #fff; padding: 7px 14px; color: var(--a-muted); font-weight: 500; }
+.seg button + button { border-left: 1px solid var(--a-line-strong); }
+.seg button.active { background: var(--a-text); color: #fff; }
+input[type=range] { width: 100%; accent-color: var(--a-accent); }
+
+.hero-preview { position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; container-type: inline-size; background: #ddd; }
+.hero-preview > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hp-veil {
+  position: absolute; inset: 0; width: 62%;
+  background: linear-gradient(to right, color-mix(in srgb, var(--bg) var(--veil), transparent), color-mix(in srgb, var(--bg) calc(var(--veil) * .85), transparent) 55%, transparent);
+  backdrop-filter: blur(6px);
+  mask-image: linear-gradient(to right, #000 50%, transparent);
+}
+.side-right .hp-veil {
+  left: auto; right: 0;
+  background: linear-gradient(to left, color-mix(in srgb, var(--bg) var(--veil), transparent), color-mix(in srgb, var(--bg) calc(var(--veil) * .85), transparent) 55%, transparent);
+  mask-image: linear-gradient(to left, #000 50%, transparent);
+}
+.hp-text { position: absolute; left: 5cqw; bottom: 9cqw; width: 38cqw; display: grid; gap: 1.6cqw; color: var(--text); }
+.side-right .hp-text { left: auto; right: 5cqw; text-align: right; }
+.hp-kicker { font: 1.4cqw/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+.hp-name { font: 9cqw/.86 'Bebas Neue', sans-serif; }
+.hp-name i { font-style: normal; opacity: .55; }
+.hp-tag { font-size: 1.6cqw; line-height: 1.5; }
+.hp-cap { position: absolute; right: 4cqw; bottom: 3cqw; font: 1.3cqw ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 6px rgb(0 0 0 / .5); }
+.side-right .hp-cap { right: auto; left: 4cqw; }

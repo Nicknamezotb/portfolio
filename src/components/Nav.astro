@@ -44,11 +44,26 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
   }
   nav a:hover, nav a.active { color: var(--text); }
   nav a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--accent); }
+  /* Accueil, en haut de page : les liens flottent sur la photo dans une pastille en verre dépoli */
+  @media (min-width: 721px) {
+    nav { transition: background .4s, padding .4s, box-shadow .4s; border-radius: 999px; }
+    :global(body.home:not(.scrolled)) nav {
+      background: color-mix(in srgb, var(--bg) 62%, transparent);
+      backdrop-filter: blur(14px) saturate(1.2);
+      -webkit-backdrop-filter: blur(14px) saturate(1.2);
+      padding: 4px 20px;
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+    }
+    :global(body.home:not(.scrolled)) nav a { color: var(--text); }
+  }
   .burger { display: none; background: none; border: 0; width: 40px; height: 40px; cursor: pointer; position: relative; margin-right: -8px; }
   .burger span { position: absolute; left: 9px; right: 9px; height: 1.5px; background: var(--text); transition: transform .35s var(--ease); }
   .burger span:first-child { top: 16px; } .burger span:last-child { top: 23px; }
 
   @media (max-width: 720px) {
+    :global(body.home:not(.scrolled):not(.menu-open)) .nav {
+      background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 75%, transparent), transparent);
+    }
     .burger { display: block; z-index: 2; }
     nav {
       position: fixed; inset: 0; flex-direction: column; justify-content: center; align-items: flex-start;

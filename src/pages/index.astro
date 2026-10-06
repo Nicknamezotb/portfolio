@@ -4,35 +4,57 @@ import { content, url, cover, single, ytThumb } from '../lib/media';
 
 const { settings, home, galleries, videos, creations, projects } = content;
 const hero = single(home.heroPhoto) ?? cover([], 'hero');
+const side = home.heroSide === 'right' ? 'right' : 'left';
+const opacity = Math.min(100, Math.max(0, home.heroOpacity ?? 55));
+const [first, ...rest] = settings.name.trim().split(/\s+/);
+
 const firstVideo = videos.flatMap((c) => c.items)[0];
 const videoCount = videos.reduce((n, c) => n + c.items.length, 0);
 const featured = projects.find((p) => p.slug === home.featured) ?? projects[0];
 const featuredImg = featured && (single(featured.cover) ?? (featured.youtube ? { thumb: ytThumb(featured.youtube) } : cover([], featured.slug)));
 
+// Images des cartes : celle choisie dans l'admin, sinon une image par défaut tirée du contenu
+const cards = home.cards ?? { photo: null, video: null, creations: null };
 const entries = [
-  { href: '/photo', title: 'Photo', meta: `${galleries.length} galeries`, img: cover(galleries[0]?.photos, galleries[0]?.slug ?? 'photo')?.thumb },
-  { href: '/video', title: 'Vidéo', meta: `${videoCount} projets`, img: firstVideo ? ytThumb(firstVideo.youtube) : undefined },
-  { href: '/creations', title: 'Créations', meta: `${creations.length} identités visuelles`, img: cover(creations[0]?.sections[0]?.photos, creations[0]?.slug ?? 'creations')?.thumb },
+  {
+    href: '/photo', title: 'Photo', meta: `${galleries.length} galeries`,
+    img: single(cards.photo)?.thumb ?? cover(galleries[0]?.photos, galleries[0]?.slug ?? 'photo')?.thumb,
+  },
+  {
+    href: '/video', title: 'Vidéo', meta: `${videoCount} projets`,
+    img: single(cards.video)?.thumb ?? (firstVideo ? ytThumb(firstVideo.youtube) : undefined),
+  },
+  {
+    href: '/creations', title: 'Créations', meta: `${creations.length} identités visuelles`,
+    img: single(cards.creations)?.thumb ?? cover(creations[0]?.sections.flatMap((s) => s.photos), creations[0]?.slug ?? 'creations')?.thumb,
+  },
 ];
 ---
-<Base>
-  <section class="wrap hero">
-    <p class="mono">{settings.role}</p>
-    <div class="hero-row">
-      <h1 class="display">{settings.name}</h1>
-      <p class="lede">{home.tagline}</p>
-    </div>
-  </section>
+<Base bodyClass="home">
+  <section class:list={['hero', `side-${side}`, { bare: !hero }]} style={`--veil:${opacity}%`}>
+    {hero && <img class="hero-bg" src={hero.src} alt="" fetchpriority="high" width={hero.w} height={hero.h} />}
+    <div class="veil" aria-hidden="true"></div>
 
-  {hero && (
-    <div class="wrap">
-      <div class="hero-img img-frame">
-        <img src={hero.src} alt="" fetchpriority="high" width={hero.w} height={hero.h} />
+    <div class="hero-inner wrap">
+      <div class="hero-text">
+        <p class="mono kicker"><span class="line" aria-hidden="true"></span>{settings.role}</p>
+        <h1 class="display">
+          <span class="w">{first}</span>
+          {rest.length > 0 && <span class="w">{rest.join(' ')}</span>}
+        </h1>
+        <p class="tagline">{home.tagline}</p>
+        <div class="ctas">
+          <a href={url('/photo')} class="link-arrow">Photos <span>→</span></a>
+          <a href={url('/video')} class="link-arrow">Vidéos <span>→</span></a>
+        </div>
       </div>
     </div>
-  )}
 
-  <section class="wrap section">
+    {home.heroCaption && <p class="mono caption">{home.heroCaption}</p>}
+    <a href="#travaux" class="scroll" aria-label="Défiler"><span></span></a>
+  </section>
+
+  <section id="travaux" class="wrap section">
     <div class="section-title">
       <h2 class="display">Travaux</h2>
     </div>
@@ -69,16 +91,79 @@ const entries = [
 </Base>
 
 <style>
-  .hero { padding-top: clamp(120px, 20vh, 200px); padding-bottom: clamp(28px, 5vh, 48px); }
-  .hero > .mono { margin: 0 0 14px; }
-  .hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
-  .hero h1 { font-size: clamp(56px, 9vw, 128px); animation: rise 1.2s var(--ease) both; }
-  .hero .lede { margin: 0; max-width: 40ch; animation: rise 1.2s .15s var(--ease) both; }
-  @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+  /* ---------- Hero plein écran, texte incrusté sur un voile ---------- */
+  .hero {
+    position: relative; height: 100svh; min-height: 620px; overflow: hidden;
+    display: flex; align-items: flex-end;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    animation: settle 2.8s var(--ease) both;
+  }
+  @keyframes settle { from { transform: scale(1.08); opacity: 0; } 30% { opacity: 1; } }
 
-  .hero-img { aspect-ratio: 21 / 9; animation: fade 1.6s .2s var(--ease) both; }
-  @keyframes fade { from { opacity: 0; } }
+  /* Voile : verre dépoli teinté de la couleur du fond, qui s'efface vers la photo */
+  .veil {
+    position: absolute; inset: 0; width: min(780px, 62%);
+    background: linear-gradient(to right,
+      color-mix(in srgb, var(--bg) var(--veil), transparent) 0%,
+      color-mix(in srgb, var(--bg) calc(var(--veil) * .85), transparent) 55%,
+      transparent 100%);
+    backdrop-filter: blur(16px) saturate(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    mask-image: linear-gradient(to right, #000 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 50%, transparent 100%);
+    animation: veilIn 1.6s .3s var(--ease) both;
+  }
+  @keyframes veilIn { from { opacity: 0; transform: translateX(-40px); } }
+  .side-right .veil { left: auto; right: 0; transform-origin: right; }
+  .side-right .veil {
+    background: linear-gradient(to left,
+      color-mix(in srgb, var(--bg) var(--veil), transparent) 0%,
+      color-mix(in srgb, var(--bg) calc(var(--veil) * .85), transparent) 55%,
+      transparent 100%);
+    mask-image: linear-gradient(to left, #000 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, #000 50%, transparent 100%);
+    animation-name: veilInR;
+  }
+  @keyframes veilInR { from { opacity: 0; transform: translateX(40px); } }
 
+
+  .hero-inner { position: relative; z-index: 2; display: flex; padding-bottom: clamp(48px, 10vh, 112px); }
+  .side-right .hero-inner { justify-content: flex-end; }
+  .hero-text { max-width: 460px; }
+  .side-right .hero-text { text-align: right; }
+
+  .kicker { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; color: var(--text); }
+  .side-right .kicker { justify-content: flex-end; }
+  .kicker .line { width: 32px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(64px, 8.5vw, 132px); line-height: .86; }
+  .hero h1 .w { display: block; animation: rise 1.2s var(--ease) both; }
+  .hero h1 .w:nth-child(2) { animation-delay: .12s; color: color-mix(in srgb, var(--text) 55%, transparent); }
+  @keyframes rise { from { opacity: 0; transform: translateY(28px); } }
+  .tagline { margin: 26px 0 30px; font-size: 16px; line-height: 1.65; max-width: 36ch; animation: rise 1.2s .25s var(--ease) both; }
+  .side-right .tagline { margin-left: auto; }
+  .ctas { display: flex; gap: 28px; animation: rise 1.2s .35s var(--ease) both; }
+  .side-right .ctas { justify-content: flex-end; }
+
+  .caption {
+    position: absolute; z-index: 2; bottom: clamp(24px, 4vh, 40px); right: var(--gutter); margin: 0;
+    color: #fff; text-shadow: 0 1px 8px rgb(0 0 0 / .45);
+  }
+  .side-right .caption { right: auto; left: var(--gutter); }
+
+  .scroll {
+    position: absolute; z-index: 2; left: 50%; bottom: 0; width: 1px; height: 56px; overflow: hidden;
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+  }
+  .scroll span { position: absolute; inset: 0; background: var(--text); animation: drip 2.2s var(--ease) infinite; }
+  @keyframes drip { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+
+  /* Sans photo : hero typographique simple */
+  .hero.bare { height: 80svh; }
+  .hero.bare .veil, .hero.bare .scroll { display: none; }
+
+  /* ---------- Sections suivantes ---------- */
   .entries { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 2vw, 28px); }
   .entry .img-frame { aspect-ratio: 4 / 5; }
   .entry:hover img { transform: scale(1.04); }
@@ -98,7 +183,26 @@ const entries = [
     .entries .entry:last-child { grid-column: span 2; }
     .entries .entry:last-child .img-frame { aspect-ratio: 16 / 9; }
     .feature { grid-template-columns: 1fr; }
-    .hero-img { aspect-ratio: 4 / 3; }
+  }
+  @media (max-width: 640px) {
+    /* Sur mobile, le voile remonte depuis le bas */
+    .hero { height: 92svh; min-height: 560px; }
+    .veil, .side-right .veil {
+      inset: auto 0 0; width: 100%; height: 72%;
+      background: linear-gradient(to top,
+        color-mix(in srgb, var(--bg) var(--veil), transparent) 0%,
+        color-mix(in srgb, var(--bg) calc(var(--veil) * .8), transparent) 50%,
+        transparent 100%);
+      mask-image: linear-gradient(to top, #000 45%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to top, #000 45%, transparent 100%);
+      animation-name: veilUp;
+    }
+    @keyframes veilUp { from { opacity: 0; transform: translateY(40px); } }
+    .side-right .hero-inner { justify-content: flex-start; }
+    .side-right .hero-text, .side-right .kicker, .side-right .ctas { text-align: left; justify-content: flex-start; }
+    .side-right .tagline { margin-left: 0; }
+    .caption, .side-right .caption { top: 84px; bottom: auto; right: var(--gutter); left: auto; }
+    .scroll { display: none; }
   }
   @media (max-width: 520px) {
     .entries { grid-template-columns: 1fr; }

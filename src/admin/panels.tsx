@@ -88,19 +88,81 @@ export function General() {
 
 /* ---------- Accueil ---------- */
 
+const CARD_LABELS = {
+  photo: ['Carte « Photo »', 'Par défaut : la couverture de ta première galerie.'],
+  video: ['Carte « Vidéo »', 'Par défaut : la miniature de ta première vidéo.'],
+  creations: ['Carte « Créations »', 'Par défaut : la première image de ta première création.'],
+} as const;
+
+function HeroPreview() {
+  const { content: c, imgUrl } = useStore();
+  const h = c.home;
+  const [first, ...rest] = c.settings.name.trim().split(/\s+/);
+  const t = c.settings.theme;
+  const bg = h.heroPhoto ? imgUrl(h.heroPhoto, false) : 'https://picsum.photos/seed/hero-cover/1200/800';
+  return (
+    <div class={`hero-preview side-${h.heroSide}`} style={{ '--bg': t.bg, '--text': t.text, '--accent': t.accent, '--veil': `${h.heroOpacity}%` } as any}>
+      <img src={bg} alt="" />
+      <div class="hp-veil" />
+      <div class="hp-text">
+        <span class="hp-kicker">{c.settings.role}</span>
+        <span class="hp-name">{first}<br /><i>{rest.join(' ')}</i></span>
+        <span class="hp-tag">{h.tagline}</span>
+      </div>
+      {h.heroCaption && <span class="hp-cap">{h.heroCaption}</span>}
+    </div>
+  );
+}
+
 export function Home() {
   const { content: c, set } = useStore();
+  const h = c.home;
   return (
-    <Panel title="Accueil" intro="La première page que voient tes visiteurs.">
-      <Card title="En-tête">
-        <Area label="Phrase d'accroche" rows={2} value={c.home.tagline} onChange={(v) => set((d) => (d.home.tagline = v))} />
+    <Panel title="Accueil" intro="La première chose que voient tes visiteurs.">
+      <Card title="Écran d'arrivée">
+        <div class="field wide">
+          <span class="label">Aperçu</span>
+          <HeroPreview />
+          <span class="hint">Aperçu indicatif. Le rendu exact est visible sur le site après publication.</span>
+        </div>
         <PhotoManager
-          label="Grande photo"
+          label="Photo plein écran"
           single
-          photos={c.home.heroPhoto ? [c.home.heroPhoto] : []}
+          photos={h.heroPhoto ? [h.heroPhoto] : []}
           onChange={(p) => set((d) => (d.home.heroPhoto = p[0] ?? null))}
-          hint="Affichée en très grand format panoramique sous ton nom. Choisis une photo horizontale. "
+          hint="Occupe tout l'écran. Choisis une photo horizontale dont le sujet est du côté opposé au texte. "
         />
+        <Area label="Phrase d'accroche" rows={2} value={h.tagline} onChange={(v) => set((d) => (d.home.tagline = v))} />
+        <Field label="Légende de la photo (optionnelle)" value={h.heroCaption} onChange={(v) => set((d) => (d.home.heroCaption = v))} placeholder="ex. Cusco, Pérou · 2025" />
+        <label class="field">
+          <span class="label">Côté du texte</span>
+          <div class="seg">
+            {(['left', 'right'] as const).map((s) => (
+              <button type="button" class={h.heroSide === s ? 'active' : ''} onClick={() => set((d) => (d.home.heroSide = s))}>
+                {s === 'left' ? '← Gauche' : 'Droite →'}
+              </button>
+            ))}
+          </div>
+        </label>
+        <label class="field">
+          <span class="label">Opacité du voile : {h.heroOpacity} %</span>
+          <input type="range" min="0" max="95" step="5" value={h.heroOpacity} onInput={(e) => set((d) => (d.home.heroOpacity = Number(e.currentTarget.value)))} />
+          <span class="hint">Plus c'est élevé, plus le texte est lisible et la photo estompée derrière.</span>
+        </label>
+      </Card>
+
+      <Card title="Images des rubriques">
+        {(Object.keys(CARD_LABELS) as (keyof typeof CARD_LABELS)[]).map((k) => (
+          <div class="field">
+            <PhotoManager
+              label={CARD_LABELS[k][0]}
+              single
+              photos={h.cards[k] ? [h.cards[k]!] : []}
+              onChange={(p) => set((d) => (d.home.cards[k] = p[0] ?? null))}
+              hint={`${CARD_LABELS[k][1]} Format vertical conseillé. `}
+            />
+          </div>
+        ))}
       </Card>
       <Card title="À la une">
         <label class="field wide">

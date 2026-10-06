@@ -4,9 +4,9 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { content, url } from '../lib/media';
 
-interface Props { title?: string; description?: string }
+interface Props { title?: string; description?: string; bodyClass?: string }
 const { settings } = content;
-const { title, description = `${settings.name} — ${settings.role}. Photographies, vidéos et créations visuelles.` } = Astro.props;
+const { title, bodyClass, description = `${settings.name} — ${settings.role}. Photographies, vidéos et créations visuelles.` } = Astro.props;
 const fullTitle = title ? `${title} — ${settings.name}` : `${settings.name} — ${settings.role}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const { bg, text, accent } = settings.theme;
@@ -27,7 +27,7 @@ const { bg, text, accent } = settings.theme;
     <meta property="og:url" content={canonical} />
     <style set:html={`html:root{--bg:${bg};--text:${text};--accent:${accent}}`}></style>
   </head>
-  <body>
+  <body class={bodyClass}>
     <Nav />
     <main>
       <slot />
