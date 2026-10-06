@@ -1,0 +1,116 @@
+{
+  "settings": {
+    "name": "Quentin Girard",
+    "role": "Photographe · Vidéaste",
+    "email": "qg.girard@gmail.com",
+    "formspreeId": "",
+    "socials": [
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/in/quentin-girard-64b968335" },
+      { "label": "Instagram", "url": "https://www.instagram.com/quentin_a_la_cam" },
+      { "label": "YouTube", "url": "https://www.youtube.com/@qg.production" }
+    ],
+    "theme": { "bg": "#f5f3ee", "text": "#17181c", "accent": "#3f6a91" },
+    "demoPhotos": true
+  },
+  "home": {
+    "tagline": "Je raconte des histoires en images : reportages, événements, voyages et identités visuelles.",
+    "heroPhoto": null,
+    "featured": "machu-picchu"
+  },
+  "videos": [
+    {
+      "category": "Prestations",
+      "items": [
+        { "title": "Aftermovie — Remise des diplômes ISEP 2026", "subtitle": "", "credit": "Tournage & montage", "year": "2026", "youtube": "7njct8RJ4WA", "link": "" },
+        { "title": "Interview ISEP Alumni — Seehaptic", "subtitle": "", "credit": "Tournage & montage", "year": "", "youtube": "PMtkMxTR3Ys", "link": "" },
+        { "title": "Aftermovie — Hackathon IA mixité & inclusion en entreprise", "subtitle": "Cercle InterL, LENOVO, ISEP", "credit": "Tournage & montage", "year": "", "youtube": "UNw12qmtXDM", "link": "" },
+        { "title": "Interview ISEP Alumni — CityMood", "subtitle": "", "credit": "Tournage & montage", "year": "", "youtube": "M_PWLtt6eKo", "link": "" }
+      ]
+    },
+    {
+      "category": "Documentaires de voyage",
+      "items": [
+        { "title": "Projet Machu Picchu", "subtitle": "Documentaire, avant-première au cinéma Club de l'Étoile, Paris", "credit": "", "year": "2025", "youtube": "0ZN13Pi7R9c", "link": "/projets/machu-picchu" },
+        { "title": "Bavière 2024 — Et si vous faisiez une pause ?", "subtitle": "", "credit": "", "year": "2024", "youtube": "fi7rIJfJuJM", "link": "" },
+        { "title": "Dolomites 2023", "subtitle": "DJI Mavic · 4K", "credit": "", "year": "2023", "youtube": "csmri7LXf5s", "link": "" }
+      ]
+    },
+    {
+      "category": "Projets associatifs",
+      "items": [
+        { "title": "HighOnes BDP", "subtitle": "Interview des présidents des bureaux de promotion pendant la campagne", "credit": "", "year": "", "youtube": "i6hOubOY1yo", "link": "" }
+      ]
+    },
+    {
+      "category": "Clips",
+      "items": [
+        { "title": "ROIS", "subtitle": "Son de campagne — Bureau de promo Nevera", "credit": "Montage, enregistrement & mix/mastering", "year": "", "youtube": "CZnX5SpGypg", "link": "" },
+        { "title": "E.X.A.L.T.E", "subtitle": "Son de campagne — Bureau des élèves Exalte", "credit": "Enregistrement & mix/mastering", "year": "", "youtube": "mirjYh3ZRbo", "link": "" }
+      ]
+    }
+  ],
+  "galleries": [
+    { "slug": "afterworks", "title": "Soirées Afterworks", "context": "IsepLive", "place": "ISEP", "year": "2026", "related": "", "photos": [] },
+    { "slug": "concert-isepband", "title": "Concert IsepBand", "context": "", "place": "ISEP", "year": "2026", "related": "", "photos": [] },
+    { "slug": "conference-marco-landi", "title": "Conférence Marco Landi", "context": "", "place": "ISEP", "year": "2026", "related": "", "photos": [] },
+    { "slug": "paris", "title": "Paris", "context": "", "place": "Paris", "year": "2025", "related": "", "photos": [] },
+    { "slug": "perou", "title": "Pérou", "context": "26 jours de voyage", "place": "Pérou", "year": "2025", "related": "/projets/machu-picchu", "photos": [] },
+    { "slug": "italie", "title": "Italie", "context": "Autour de Naples", "place": "Naples", "year": "2025", "related": "", "photos": [] }
+  ],
+  "creations": [
+    {
+      "slug": "baiana",
+      "title": "BAIANA",
+      "org": "Bureau des élèves — ISEP",
+      "year": "2026",
+      "work": "Logo simplifié",
+      "text": "J'ai rejoint le BDE dans le pôle création et j'ai participé à la réalisation du logo simplifié.",
+      "sections": [{ "title": "Logo simplifié", "caption": "", "photos": [] }],
+      "video": { "title": "", "credit": "", "youtube": "" }
+    },
+    {
+      "slug": "nevera",
+      "title": "NEVERA",
+      "org": "Bureau de promo — ISEP",
+      "year": "2025",
+      "work": "Charte graphique, Logos, Page Instagram, Son de campagne",
+      "text": "J'ai créé mon BDP en première année d'école d'ingénieur et j'ai assumé le rôle de président pendant la campagne, remportée en avril 2025. Avec mon équipe, j'ai utilisé la suite Adobe pour construire une identité graphique autour des parcs d'attractions.",
+      "sections": [
+        { "title": "Logos", "caption": "", "photos": [] },
+        { "title": "Page Instagram", "caption": "", "photos": [] }
+      ],
+      "video": { "title": "Son de campagne — ROIS", "credit": "Enregistrement, mix, mastering, clip", "youtube": "CZnX5SpGypg" }
+    },
+    {
+      "slug": "exalte",
+      "title": "EXALTE",
+      "org": "Bureau des élèves — ISEP",
+      "year": "2025",
+      "work": "Logo simplifié, Photobooth, Son de campagne",
+      "text": "J'ai rejoint le BDE en tant que membre du pôle créa. Nous avons remporté la campagne en mai 2025.",
+      "sections": [
+        { "title": "Logo simplifié", "caption": "", "photos": [] },
+        { "title": "Photobooth", "caption": "", "photos": [] }
+      ],
+      "video": { "title": "Son de campagne — E.X.A.L.T.E", "credit": "Enregistrement & mix/mastering", "youtube": "mirjYh3ZRbo" }
+    }
+  ],
+  "projects": [
+    {
+      "slug": "machu-picchu",
+      "title": "Projet Machu Picchu",
+      "kicker": "Documentaire",
+      "date": "Juillet 2025",
+      "place": "Pérou",
+      "intro": "Après des années d'amitié, des treks dans les Dolomites, en Bavière sous la neige, et des années de camps avec les scouts, on voulait un plus gros projet. Depuis deux ans, on rêvait du pays des Incas. Comme souvent entre nous, si c'est dit, ce sera fait.\n\nS'ensuivent des mois d'attente et une motivation grandissante, jusqu'au départ le 17 juillet 2025.\n\nNos objectifs : ouvrir les yeux sur ce pays, rencontrer des locaux et des voyageurs, mais surtout pouvoir partager cette aventure.",
+      "youtube": "0ZN13Pi7R9c",
+      "cover": null,
+      "sections": [
+        { "title": "Avant-première", "caption": "Cinéma Club de l'Étoile, Paris", "photos": [] },
+        { "title": "Photos voyage", "caption": "", "photos": [] }
+      ],
+      "moreLabel": "Plus de photos du Pérou",
+      "moreLink": "/photo/perou"
+    }
+  ]
+}

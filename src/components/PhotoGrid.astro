@@ -2,35 +2,22 @@
 import type { Photo } from '../lib/media';
 interface Props { photos: Photo[]; label?: string; columns?: number }
 const { photos, label = '', columns = 3 } = Astro.props;
-const isPlaceholder = photos.length > 0 && photos[0].placeholder;
 ---
-<div class="grid" style={`--cols:${columns}`} data-lightbox>
-  {photos.map((p, i) =>
-    p.placeholder ? (
-      <div class="tile ph" style={`aspect-ratio:${p.w}/${p.h}`} aria-hidden="true">
-        <span class="mono">{label}</span>
-      </div>
-    ) : (
+{photos.length > 0 && (
+  <div class="grid" style={`--cols:${columns}`} data-lightbox>
+    {photos.map((p, i) => (
       <a class="tile" href={p.src} data-index={i}>
-        <img src={p.thumb} alt={p.alt ?? `${label}, photo ${i + 1}`} width={p.w} height={p.h} loading="lazy" decoding="async" />
+        <img src={p.thumb} alt={p.alt || `${label}, photo ${i + 1}`} width={p.w} height={p.h} loading="lazy" decoding="async" />
       </a>
-    )
-  )}
-</div>
-{isPlaceholder && <p class="note">Photos à venir.</p>}
+    ))}
+  </div>
+)}
 
 <style>
-  .grid { columns: var(--cols); column-gap: clamp(8px, 1vw, 16px); }
-  .tile { display: block; break-inside: avoid; margin-bottom: clamp(8px, 1vw, 16px); background: var(--bg-raised); overflow: hidden; }
-  .tile img { width: 100%; transition: transform 1.2s var(--ease); }
-  a.tile { cursor: zoom-in; }
-  a.tile:hover img { transform: scale(1.025); }
-  .ph {
-    background: linear-gradient(135deg, rgb(110 159 193 / .07), transparent 65%), var(--bg-raised);
-    display: flex; align-items: flex-end; padding: 14px;
-  }
-  .ph .mono { font-size: 10px; color: var(--dim); }
-  .note { margin-top: 20px; font-family: var(--font-mono); font-size: 12px; color: var(--dim); }
+  .grid { columns: var(--cols); column-gap: clamp(8px, 1vw, 14px); }
+  .tile { display: block; break-inside: avoid; margin-bottom: clamp(8px, 1vw, 14px); background: var(--raised); overflow: hidden; cursor: zoom-in; }
+  .tile img { width: 100%; transition: transform 1.2s var(--ease), opacity .4s; }
+  .tile:hover img { transform: scale(1.025); }
   @media (max-width: 960px) { .grid { columns: 2; } }
   @media (max-width: 480px) { .grid { column-gap: 6px; } .tile { margin-bottom: 6px; } }
 </style>

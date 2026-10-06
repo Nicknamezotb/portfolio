@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import VideoEmbed from '../../components/VideoEmbed.astro';
+import { content, url, photos } from '../../lib/media';
+
+export function getStaticPaths() {
+  return content.projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props;
+const paragraphs = p.intro.split(/\n\s*\n/).filter(Boolean);
+const meta = [p.kicker, p.place, p.date].filter(Boolean).join(' · ');
+---
+<Base title={p.title} description={paragraphs[0]?.slice(0, 160)}>
+  <div class="wrap">
+    <header class="page-head">
+      {meta && <span class="mono">{meta}</span>}
+      <h1 class="display">{p.title}</h1>
+    </header>
+
+    <div class="intro">
+      {paragraphs.map((t) => <p class="lede">{t}</p>)}
+    </div>
+
+    {p.youtube && (
+      <section class="section">
+        <div class="section-title"><h2 class="display">{p.kicker || 'Vidéo'}</h2></div>
+        <VideoEmbed id={p.youtube} title={p.title} />
+      </section>
+    )}
+
+    {p.sections.map((s, i) => (
+      <section class="section">
+        <div class="section-title">
+          <h2 class="display">{s.title}</h2>
+          {s.caption && <span class="mono">{s.caption}</span>}
+        </div>
+        <PhotoGrid photos={photos(s.photos, `${p.slug}-${i}`, 9)} label={`${p.title}, ${s.title}`} />
+      </section>
+    ))}
+
+    {p.moreLink && <a href={url(p.moreLink)} class="link-arrow">{p.moreLabel || 'En voir plus'} <span>→</span></a>}
+  </div>
+</Base>
+
+<style>
+  .intro { max-width: 640px; margin-left: auto; }
+  .intro .lede { margin: 0 0 1.1em; }
+</style>

@@ -1,9 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import galleries from '../../data/galleries.json';
-import { url, getPhotos } from '../../lib/media';
+import { content, url, cover } from '../../lib/media';
+const { galleries } = content;
 ---
-<Base title="Photo" description="Galeries photo de Quentin Girard : événements, concerts, conférences et voyages.">
+<Base title="Photo" description="Galeries photo : événements, concerts, conférences et voyages.">
   <div class="wrap">
     <header class="page-head">
       <span class="mono">Galeries · {galleries.length}</span>
@@ -12,18 +12,13 @@ import { url, getPhotos } from '../../lib/media';
 
     <div class="cards">
       {galleries.map((g) => {
-        const cover = getPhotos(g.slug, 1)[0];
-        const count = getPhotos(g.slug, g.placeholderCount).length;
+        const c = cover(g.photos, g.slug);
         return (
           <a href={url(`/photo/${g.slug}`)} class="card reveal">
-            <div class="cover">
-              {cover.placeholder
-                ? <div class="ph" />
-                : <img src={cover.thumb} alt="" loading="lazy" width={cover.w} height={cover.h} />}
-            </div>
+            <div class="img-frame">{c && <img src={c.thumb} alt="" loading="lazy" />}</div>
             <div class="meta">
               <h2 class="display">{g.title}</h2>
-              <span class="mono">{g.place} · {g.year} · {count} photos</span>
+              <span class="mono">{[g.place, g.year].filter(Boolean).join(' · ')}</span>
             </div>
           </a>
         );
@@ -33,18 +28,12 @@ import { url, getPhotos } from '../../lib/media';
 </Base>
 
 <style>
-  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(32px, 5vw, 72px) clamp(16px, 3vw, 40px); }
-  .cover { aspect-ratio: 3/2; overflow: hidden; background: var(--bg-raised); }
-  .cover img, .ph { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease), opacity .6s; }
-  .ph { background: linear-gradient(135deg, rgb(110 159 193 / .08), transparent 65%), var(--bg-raised); }
-  .card:hover .cover img, .card:hover .ph { transform: scale(1.035); }
-  .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 16px; }
-  .meta h2 { font-size: clamp(32px, 3.4vw, 48px); transition: color .3s; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 48px) clamp(12px, 2vw, 24px); }
+  .img-frame { aspect-ratio: 4 / 3; }
+  .card:hover img { transform: scale(1.04); }
+  .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; }
+  .meta h2 { font-size: clamp(24px, 2.2vw, 30px); transition: color .3s; }
   .card:hover h2 { color: var(--accent); }
-  .meta .mono { text-align: right; }
-  @media (max-width: 720px) {
-    .cards { grid-template-columns: 1fr; }
-    .meta { flex-direction: column; gap: 4px; }
-    .meta .mono { text-align: left; }
-  }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 </style>

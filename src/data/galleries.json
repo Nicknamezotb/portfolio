@@ -1,8 +1,0 @@
-[
-  { "slug": "afterworks", "title": "Soirées Afterworks", "context": "IsepLive", "place": "ISEP", "year": "2026", "placeholderCount": 36 },
-  { "slug": "concert-isepband", "title": "Concert IsepBand", "place": "ISEP", "year": "2026", "placeholderCount": 24 },
-  { "slug": "conference-marco-landi", "title": "Conférence Marco Landi", "place": "ISEP", "year": "2026", "placeholderCount": 60 },
-  { "slug": "paris", "title": "Paris", "place": "Paris", "year": "2025", "placeholderCount": 26 },
-  { "slug": "perou", "title": "Pérou", "context": "26 jours de voyage", "place": "Pérou", "year": "2025", "placeholderCount": 150, "related": "/machu-picchu" },
-  { "slug": "italie", "title": "Italie", "context": "Autour de Naples", "place": "Naples", "year": "2025", "placeholderCount": 30 }
-]

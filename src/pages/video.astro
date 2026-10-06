@@ -1,33 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
 import VideoEmbed from '../components/VideoEmbed.astro';
-import videos from '../data/videos.json';
-import { url } from '../lib/media';
+import { content, url } from '../lib/media';
 
-type Item = { title: string; subtitle?: string; credit?: string; youtube: string; year?: string; link?: string };
+const { videos } = content;
 const total = videos.reduce((n, c) => n + c.items.length, 0);
 ---
-<Base title="Vidéo" description="Projets vidéo de Quentin Girard : aftermovies, interviews, documentaires de voyage et clips.">
+<Base title="Vidéo" description="Projets vidéo : aftermovies, interviews, documentaires de voyage et clips.">
   <div class="wrap">
     <header class="page-head">
       <span class="mono">Projets · {total}</span>
       <h1 class="display">Vidéo</h1>
     </header>
 
-    {videos.map((cat) => (
+    {videos.filter((c) => c.items.length).map((cat) => (
       <section class="cat">
         <div class="section-title">
           <h2 class="display">{cat.category}</h2>
           <span class="mono">{cat.items.length}</span>
         </div>
         <div class="list">
-          {(cat.items as Item[]).map((v) => (
+          {cat.items.map((v) => (
             <article class="item reveal">
               <VideoEmbed id={v.youtube} title={v.title} />
               <div class="caption">
                 <h3>{v.title}</h3>
                 {v.subtitle && <p class="sub">{v.subtitle}</p>}
-                <p class="mono">{[v.credit, v.year].filter(Boolean).join(' · ')}</p>
+                {(v.credit || v.year) && <p class="mono">{[v.credit, v.year].filter(Boolean).join(' · ')}</p>}
                 {v.link && <a href={url(v.link)} class="link-arrow">Voir le projet <span>→</span></a>}
               </div>
             </article>
@@ -39,13 +38,12 @@ const total = videos.reduce((n, c) => n + c.items.length, 0);
 </Base>
 
 <style>
-  .cat { margin-bottom: clamp(64px, 12vh, 140px); }
-  .list { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(40px, 6vw, 80px) clamp(16px, 3vw, 40px); }
-  .caption { padding-top: 18px; }
-  h3 { font-size: clamp(18px, 1.5vw, 21px); font-weight: 500; line-height: 1.35; margin: 0 0 6px; letter-spacing: -.005em; }
-  .sub { color: var(--muted); margin: 0 0 10px; font-size: 15px; }
+  .cat { margin-bottom: clamp(56px, 10vh, 112px); }
+  .list { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(36px, 5vw, 64px) clamp(14px, 2.4vw, 32px); }
+  .caption { padding-top: 14px; }
+  h3 { font-size: 16px; font-weight: 550; line-height: 1.4; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 8px; font-size: 14px; }
   .caption .mono { margin: 0; }
-  .caption .mono:empty { display: none; }
-  .link-arrow { margin-top: 16px; }
+  .link-arrow { margin-top: 14px; }
   @media (max-width: 760px) { .list { grid-template-columns: 1fr; } }
 </style>

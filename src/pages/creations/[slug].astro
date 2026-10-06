@@ -2,10 +2,10 @@
 import Base from '../../layouts/Base.astro';
 import PhotoGrid from '../../components/PhotoGrid.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
-import creations from '../../data/creations.json';
-import { url, getPhotos } from '../../lib/media';
+import { content, url, photos } from '../../lib/media';
 
 export function getStaticPaths() {
+  const { creations } = content;
   return creations.map((c, i) => ({
     params: { slug: c.slug },
     props: { c, next: creations[(i + 1) % creations.length] },
@@ -13,7 +13,7 @@ export function getStaticPaths() {
 }
 const { c, next } = Astro.props;
 ---
-<Base title={c.title} description={`${c.title}, ${c.org} ${c.year} : ${c.work.join(', ')}.`}>
+<Base title={c.title} description={`${c.title}, ${c.org} ${c.year} : ${c.work}.`}>
   <div class="wrap">
     <header class="page-head">
       <a href={url('/creations')} class="mono back">← Créations</a>
@@ -22,47 +22,53 @@ const { c, next } = Astro.props;
 
     <div class="intro">
       <dl class="specs">
-        <div><dt class="mono">Structure</dt><dd>{c.org}</dd></div>
-        <div><dt class="mono">Année</dt><dd>{c.year}</dd></div>
-        <div><dt class="mono">Réalisations</dt><dd>{c.work.join(', ')}</dd></div>
+        {c.org && <div><dt class="mono">Structure</dt><dd>{c.org}</dd></div>}
+        {c.year && <div><dt class="mono">Année</dt><dd>{c.year}</dd></div>}
+        {c.work && <div><dt class="mono">Réalisations</dt><dd>{c.work}</dd></div>}
       </dl>
       <p class="lede">{c.text}</p>
     </div>
 
-    {c.sections.map((s) => (
-      <section class="section">
-        <div class="section-title"><h2 class="display">{s.title}</h2></div>
-        <PhotoGrid photos={getPhotos(s.media, s.placeholderCount)} label={`${c.title} · ${s.title}`} columns={2} />
-      </section>
-    ))}
+    {c.sections.map((s, i) => {
+      const list = photos(s.photos, `${c.slug}-${i}`, 4);
+      return list.length > 0 && (
+        <section class="section">
+          <div class="section-title">
+            <h2 class="display">{s.title}</h2>
+            {s.caption && <span class="mono">{s.caption}</span>}
+          </div>
+          <PhotoGrid photos={list} label={`${c.title}, ${s.title}`} columns={2} />
+        </section>
+      );
+    })}
 
-    {c.video && (
+    {c.video?.youtube && (
       <section class="section">
         <div class="section-title">
-          <h2 class="display">{c.video.title}</h2>
-          <span class="mono">{c.video.credit}</span>
+          <h2 class="display">{c.video.title || 'Vidéo'}</h2>
+          {c.video.credit && <span class="mono">{c.video.credit}</span>}
         </div>
-        <VideoEmbed id={c.video.youtube} title={c.video.title} />
+        <VideoEmbed id={c.video.youtube} title={c.video.title || c.title} />
       </section>
     )}
 
-    <a href={url(`/creations/${next.slug}`)} class="next">
-      <span class="mono">Projet suivant</span>
-      <span class="display">{next.title} →</span>
-    </a>
+    {next.slug !== c.slug && (
+      <a href={url(`/creations/${next.slug}`)} class="next">
+        <span class="mono">Projet suivant</span>
+        <span class="display">{next.title} →</span>
+      </a>
+    )}
   </div>
 </Base>
 
 <style>
-  .back { display: inline-block; margin-bottom: 28px; transition: color .3s; }
-  .back:hover { color: var(--text); }
-  .intro { display: grid; grid-template-columns: 1fr 1.6fr; gap: clamp(32px, 6vw, 96px); }
-  .specs { margin: 0; display: grid; gap: 20px; align-content: start; }
-  dt { margin-bottom: 4px; }
+  .intro { display: grid; grid-template-columns: 1fr 1.8fr; gap: clamp(28px, 5vw, 80px); }
+  .specs { margin: 0; display: grid; gap: 16px; align-content: start; }
+  dt { margin-bottom: 2px; }
   dd { margin: 0; }
   .lede { margin: 0; }
-  .next { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; margin-top: clamp(40px, 8vh, 96px); }
-  .next .display { font-size: clamp(40px, 6vw, 80px); transition: color .3s; }
+  .next { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; margin-top: clamp(36px, 6vh, 80px); }
+  .next .display { font-size: clamp(32px, 4vw, 52px); transition: color .3s; }
   .next:hover .display { color: var(--accent); }
   @media (max-width: 760px) { .intro { grid-template-columns: 1fr; } }
 </style>

@@ -2,24 +2,24 @@
 @import '@fontsource-variable/inter';
 @import '@fontsource/jetbrains-mono/400.css';
 
+/* --bg, --text et --accent viennent des réglages du back-office (Base.astro).
+   Toutes les autres teintes en sont dérivées : n'importe quel thème reste cohérent. */
 :root {
-  --bg: #14151a;
-  --bg-raised: #1b1d23;
-  --line: #2a2c33;
-  --text: #f2efe9;
-  --muted: #9a9da5;      /* gris éclairci pour rester lisible en petit */
-  --dim: #7c7f87;
-  --accent: #6e9fc1;
-  --steel: #4c6b8a;
+  --bg: #f5f3ee;
+  --text: #17181c;
+  --accent: #3f6a91;
+  --muted: color-mix(in srgb, var(--text) 62%, var(--bg));
+  --dim: color-mix(in srgb, var(--text) 45%, var(--bg));
+  --line: color-mix(in srgb, var(--text) 13%, var(--bg));
+  --raised: color-mix(in srgb, var(--text) 6%, var(--bg));
 
   --font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
   --font-body: 'Inter Variable', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --gutter: clamp(16px, 4vw, 56px);
-  --max: 1440px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1320px;
   --ease: cubic-bezier(.2, .7, .2, 1);
-  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -28,7 +28,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 400 16px/1.6 var(--font-body);
+  font: 400 15px/1.65 var(--font-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -38,39 +38,39 @@ button { font: inherit; color: inherit; }
 ::selection { background: var(--accent); color: var(--bg); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding-inline: var(--gutter); }
 
 .display {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: .01em;
-  line-height: .92;
+  letter-spacing: .015em;
+  line-height: .95;
   margin: 0;
 }
 .mono {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--muted);
 }
-.lede { font-size: clamp(17px, 1.4vw, 20px); line-height: 1.65; color: #d9d6d0; max-width: 62ch; }
+.lede { font-size: clamp(16px, 1.25vw, 18px); line-height: 1.7; color: color-mix(in srgb, var(--text) 82%, var(--bg)); max-width: 60ch; }
 
-.page-head { padding-block: clamp(120px, 18vh, 200px) clamp(48px, 8vh, 96px); }
-.page-head h1 { font-size: clamp(64px, 11vw, 168px); }
-.page-head .mono { display: block; margin-bottom: 20px; }
+.page-head { padding-block: clamp(112px, 16vh, 160px) clamp(36px, 6vh, 64px); }
+.page-head h1 { font-size: clamp(48px, 7vw, 96px); }
+.page-head .mono { display: block; margin-bottom: 14px; }
 
-.section { padding-block: clamp(56px, 10vh, 120px); }
+.section { padding-block: clamp(48px, 8vh, 96px); }
 .section-title {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
   border-top: 1px solid var(--line);
-  padding-top: 20px; margin-bottom: clamp(28px, 4vw, 48px);
+  padding-top: 16px; margin-bottom: clamp(24px, 3vw, 36px);
 }
-.section-title h2 { font-size: clamp(32px, 4vw, 52px); }
+.section-title h2 { font-size: clamp(26px, 2.6vw, 34px); }
 
 .link-arrow {
   display: inline-flex; align-items: center; gap: .6em;
-  font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
   color: var(--text); border-bottom: 1px solid var(--line); padding-bottom: 4px;
   transition: color .3s, border-color .3s;
 }
@@ -78,8 +78,14 @@ button { font: inherit; color: inherit; }
 .link-arrow span { transition: transform .3s var(--ease); }
 .link-arrow:hover span { transform: translateX(4px); }
 
+.back { display: inline-block; margin-bottom: 20px; transition: color .3s; }
+.back:hover { color: var(--text); }
+
+.img-frame { overflow: hidden; background: var(--raised); }
+.img-frame img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+
 /* Apparition douce au scroll */
-.reveal { opacity: 0; transform: translateY(16px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
