@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "baiana",
+    "title": "BAIANA",
+    "org": "Bureau des élèves — ISEP",
+    "year": "2026",
+    "work": ["Logo simplifié"],
+    "text": "J'ai rejoint le BDE dans le pôle création et j'ai participé à la réalisation du logo simplifié.",
+    "sections": [{ "title": "Logo simplifié", "media": "baiana-logo", "placeholderCount": 2 }]
+  },
+  {
+    "slug": "nevera",
+    "title": "NEVERA",
+    "org": "Bureau de promo — ISEP",
+    "year": "2025",
+    "work": ["Charte graphique", "Logos", "Page Instagram", "Son de campagne"],
+    "text": "J'ai créé mon BDP en première année d'école d'ingénieur et j'ai assumé le rôle de président pendant la campagne, remportée en avril 2025. Avec mon équipe, j'ai utilisé la suite Adobe pour construire une identité graphique autour des parcs d'attractions.",
+    "sections": [
+      { "title": "Logos", "media": "nevera-logos", "placeholderCount": 4 },
+      { "title": "Page Instagram", "media": "nevera-instagram", "placeholderCount": 6 }
+    ],
+    "video": { "title": "Son de campagne — ROIS", "credit": "Enregistrement, mix, mastering, clip", "youtube": "CZnX5SpGypg" }
+  },
+  {
+    "slug": "exalte",
+    "title": "EXALTE",
+    "org": "Bureau des élèves — ISEP",
+    "year": "2025",
+    "work": ["Logo simplifié", "Photobooth", "Son de campagne"],
+    "text": "J'ai rejoint le BDE en tant que membre du pôle créa. Nous avons remporté la campagne en mai 2025.",
+    "sections": [
+      { "title": "Logo simplifié", "media": "exalte-logo", "placeholderCount": 2 },
+      { "title": "Photobooth", "media": "exalte-photobooth", "placeholderCount": 4 }
+    ],
+    "video": { "title": "Son de campagne — E.X.A.L.T.E", "credit": "Enregistrement & mix/mastering", "youtube": "mirjYh3ZRbo" }
+  }
+]

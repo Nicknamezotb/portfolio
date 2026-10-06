@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+import galleries from '../data/galleries.json';
+import videos from '../data/videos.json';
+import creations from '../data/creations.json';
+import mp from '../data/machu-picchu.json';
+import { url, getPhotos, hasRealPhotos } from '../lib/media';
+
+const videoCount = videos.reduce((n, c) => n + c.items.length, 0);
+const entries = [
+  { href: '/photo', title: 'Photo', meta: `${galleries.length} galeries` },
+  { href: '/video', title: 'Vidéo', meta: `${videoCount} projets` },
+  { href: '/creations', title: 'Créations', meta: `${creations.length} identités visuelles` },
+];
+
+// Image du hero : la première photo du dossier Drive « hero ». Sans photo, l'accueil reste typographique.
+const hero = hasRealPhotos('hero') ? getPhotos('hero')[0].src : null;
+---
+<Base>
+  <section class:list={['hero', { 'has-img': hero }]}>
+    {hero && <img class="hero-bg" src={hero} alt="" fetchpriority="high" />}
+    <div class="wrap hero-content">
+      <p class="mono">{site.role}</p>
+      <h1 class="display">Quentin<br />Girard</h1>
+      <div class="hero-foot">
+        <p class="lede">Je raconte des histoires en images : reportages, événements, voyages et identités visuelles.</p>
+        <a href="#travaux" class="mono scroll">Défiler ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="travaux" class="wrap section">
+    <ul class="entries">
+      {entries.map((e) => (
+        <li class="reveal">
+          <a href={url(e.href)}>
+            <span class="display">{e.title}</span>
+            <span class="mono">{e.meta}</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="wrap section feature reveal">
+    <div class="section-title">
+      <h2 class="display">À la une</h2>
+      <span class="mono">{mp.place} · {mp.date}</span>
+    </div>
+    <a href={url('/machu-picchu')} class="feature-card">
+      <div class="feature-img">
+        <img src={`https://i.ytimg.com/vi/${mp.youtube}/maxresdefault.jpg`} alt="" loading="lazy" />
+      </div>
+      <div class="feature-text">
+        <h3 class="display">{mp.title}</h3>
+        <p>{mp.intro[0]}</p>
+        <span class="link-arrow">Voir le projet <span>→</span></span>
+      </div>
+    </a>
+  </section>
+</Base>
+
+<style>
+  .hero { position: relative; height: 100svh; min-height: 560px; display: flex; align-items: flex-end; overflow: hidden; }
+  .hero-bg {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: .55;
+    animation: heroIn 2.4s var(--ease) both;
+  }
+  .hero:not(.has-img) { height: 86svh; }
+  .hero:not(.has-img) h1 { animation: rise 1.4s var(--ease) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+  .hero.has-img::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, var(--bg) 4%, rgb(20 21 26 / .2) 55%, rgb(20 21 26 / .55));
+  }
+  @keyframes heroIn { from { opacity: 0; transform: scale(1.06); } }
+  .hero-content { position: relative; z-index: 1; padding-bottom: clamp(32px, 7vh, 72px); }
+  .hero h1 { font-size: clamp(88px, 17vw, 260px); margin: 12px 0 clamp(24px, 4vh, 40px); }
+  .hero-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .hero-foot .lede { margin: 0; max-width: 44ch; }
+  .scroll { white-space: nowrap; transition: color .3s; }
+  .scroll:hover { color: var(--text); }
+
+  .entries { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .entries a {
+    display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: clamp(16px, 4vw, 64px);
+    padding: clamp(20px, 3vw, 36px) 0; border-bottom: 1px solid var(--line);
+  }
+  .entries .display { font-size: clamp(56px, 9vw, 128px); transition: color .35s, transform .5s var(--ease); }
+  .entries .arrow { font-size: 28px; color: var(--dim); transition: color .35s, transform .5s var(--ease); }
+  .entries a:hover .display { color: var(--accent); transform: translateX(10px); }
+  .entries a:hover .arrow { color: var(--accent); transform: translateX(6px); }
+
+  .feature-card { display: grid; grid-template-columns: 1.6fr 1fr; gap: clamp(24px, 4vw, 64px); align-items: end; }
+  .feature-img { aspect-ratio: 16/9; overflow: hidden; background: var(--bg-raised); }
+  .feature-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.4s var(--ease); }
+  .feature-card:hover .feature-img img { transform: scale(1.03); }
+  .feature-text h3 { font-size: clamp(40px, 4.5vw, 68px); margin-bottom: 16px; }
+  .feature-text p { color: var(--muted); margin: 0 0 28px; }
+
+  @media (max-width: 860px) {
+    .feature-card { grid-template-columns: 1fr; }
+    .entries .mono { display: none; }
+    .entries a { grid-template-columns: 1fr auto; }
+    .scroll { display: none; }
+  }
+</style>

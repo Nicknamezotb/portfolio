@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import galleries from '../../data/galleries.json';
+import { url, getPhotos } from '../../lib/media';
+
+export function getStaticPaths() {
+  return galleries.map((g, i) => ({
+    params: { slug: g.slug },
+    props: { g, next: galleries[(i + 1) % galleries.length] },
+  }));
+}
+const { g, next } = Astro.props;
+const photos = getPhotos(g.slug, g.placeholderCount);
+const label = `${g.place} · ${g.year}`;
+---
+<Base title={g.title} description={`${g.title}${g.context ? ` (${g.context})` : ''} — galerie photo de Quentin Girard, ${g.year}.`}>
+  <div class="wrap">
+    <header class="page-head">
+      <a href={url('/photo')} class="mono back">← Galeries</a>
+      <h1 class="display">{g.title}</h1>
+      <p class="mono info">
+        {g.context && <span>{g.context}</span>}
+        <span>{label}</span>
+        <span>{photos.length} photos</span>
+      </p>
+    </header>
+
+    <PhotoGrid photos={photos} label={label} />
+
+    <nav class="after">
+      {g.related && <a href={url(g.related)} class="link-arrow">Voir le documentaire <span>→</span></a>}
+      <a href={url(`/photo/${next.slug}`)} class="next">
+        <span class="mono">Galerie suivante</span>
+        <span class="display">{next.title} →</span>
+      </a>
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .back { display: inline-block; margin-bottom: 28px; transition: color .3s; }
+  .back:hover { color: var(--text); }
+  .info { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 24px 0 0; }
+  .after { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-top: clamp(56px, 10vh, 112px); }
+  .next { margin-left: auto; text-align: right; display: flex; flex-direction: column; gap: 8px; }
+  .next .display { font-size: clamp(40px, 6vw, 80px); transition: color .3s; }
+  .next:hover .display { color: var(--accent); }
+</style>

@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
+const action = site.formspreeId ? `https://formspree.io/f/${site.formspreeId}` : '';
+---
+<Base title="Contact" description="Contacter Quentin Girard, photographe et vidéaste.">
+  <div class="wrap">
+    <header class="page-head">
+      <span class="mono">Contact</span>
+      <h1 class="display">Parlons-en</h1>
+    </header>
+
+    <div class="layout">
+      <aside>
+        <p class="lede">Un tournage, un événement à couvrir, une identité visuelle ? Écris-moi, je réponds rapidement.</p>
+        <a href={`mailto:${site.email}`} class="email">{site.email}</a>
+        <ul>
+          {site.socials.map((s) => <li><a href={s.url} target="_blank" rel="noopener" class="link-arrow">{s.label} <span>↗</span></a></li>)}
+        </ul>
+      </aside>
+
+      <form id="contact" action={action} method="POST" data-email={site.email}>
+        <label><span class="mono">Nom</span><input name="name" autocomplete="name" required /></label>
+        <label><span class="mono">E-mail</span><input name="email" type="email" autocomplete="email" required /></label>
+        <label><span class="mono">Message</span><textarea name="message" rows="6" required></textarea></label>
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
+        <button type="submit" class="send">Envoyer <span aria-hidden="true">→</span></button>
+        <p class="status mono" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(48px, 8vw, 128px); }
+  .lede { margin-top: 0; }
+  .email { display: inline-block; font-size: clamp(20px, 2vw, 26px); margin: 16px 0 32px; border-bottom: 1px solid var(--line); transition: color .3s, border-color .3s; }
+  .email:hover { color: var(--accent); border-color: var(--accent); }
+  ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 24px; }
+  form { display: grid; gap: 28px; }
+  label { display: grid; gap: 10px; }
+  input, textarea {
+    font: inherit; color: var(--text); background: transparent; border: 0; border-bottom: 1px solid var(--line);
+    padding: 8px 0 12px; border-radius: 0; resize: vertical; transition: border-color .3s;
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  .hp { position: absolute; left: -9999px; }
+  .send {
+    justify-self: start; background: var(--text); color: var(--bg); border: 0; cursor: pointer;
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+    padding: 16px 28px; transition: background .3s;
+  }
+  .send:hover { background: var(--accent); }
+  .send:disabled { opacity: .5; cursor: wait; }
+  .status { margin: 0; min-height: 1.5em; text-transform: none; letter-spacing: .02em; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const form = document.getElementById('contact') as HTMLFormElement;
+  const status = form.querySelector('.status')!;
+  const btn = form.querySelector('button')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    // Pas encore de Formspree configuré : on ouvre la messagerie avec le message prérempli.
+    if (!form.getAttribute('action')) {
+      const subject = encodeURIComponent(`Contact portfolio : ${data.get('name')}`);
+      const body = encodeURIComponent(`${data.get('message')}\n\n${data.get('name')} (${data.get('email')})`);
+      location.href = `mailto:${form.dataset.email}?subject=${subject}&body=${body}`;
+      return;
+    }
+    btn.disabled = true;
+    status.textContent = 'Envoi…';
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error();
+      form.reset();
+      status.textContent = 'Merci, ton message est bien parti. Je te réponds vite.';
+    } catch {
+      status.textContent = `Oups, l'envoi a échoué. Écris-moi directement à ${form.dataset.email}.`;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>

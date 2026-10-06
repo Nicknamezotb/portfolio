@@ -1,0 +1,32 @@
+---
+import site from '../data/site.json';
+import { url } from '../lib/media';
+---
+<footer class="footer">
+  <div class="wrap">
+    <div class="cta">
+      <p class="mono">Un projet, une collaboration ?</p>
+      <a href={url('/contact')} class="display big">Parlons-en <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="bottom">
+      <span class="mono">© {new Date().getFullYear()} {site.name}</span>
+      <ul>
+        {site.socials.map((s) => <li><a class="mono" href={s.url} target="_blank" rel="noopener">{s.label}</a></li>)}
+        <li><a class="mono" href={`mailto:${site.email}`}>E-mail</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { border-top: 1px solid var(--line); margin-top: clamp(64px, 12vh, 140px); }
+  .cta { padding: clamp(56px, 10vh, 112px) 0; }
+  .cta .mono { margin: 0 0 16px; }
+  .big { font-size: clamp(56px, 9vw, 140px); display: inline-block; transition: color .3s; }
+  .big span { display: inline-block; transition: transform .4s var(--ease); }
+  .big:hover { color: var(--accent); }
+  .big:hover span { transform: translateX(12px); }
+  .bottom { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding: 24px 0 32px; border-top: 1px solid var(--line); }
+  ul { list-style: none; display: flex; flex-wrap: wrap; gap: 24px; margin: 0; padding: 0; }
+  ul a:hover { color: var(--text); }
+</style>

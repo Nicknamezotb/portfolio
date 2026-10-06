@@ -1,0 +1,15 @@
+{
+  "title": "Projet Machu Picchu",
+  "date": "Juillet 2025",
+  "place": "Pérou",
+  "intro": [
+    "Après des années d'amitié, des treks dans les Dolomites, en Bavière sous la neige, et des années de camps avec les scouts, on voulait un plus gros projet. Depuis deux ans, on rêvait du pays des Incas. Comme souvent entre nous, si c'est dit, ce sera fait.",
+    "S'ensuivent des mois d'attente et une motivation grandissante, jusqu'au départ le 17 juillet 2025.",
+    "Nos objectifs : ouvrir les yeux sur ce pays, rencontrer des locaux et des voyageurs, mais surtout pouvoir partager cette aventure."
+  ],
+  "youtube": "0ZN13Pi7R9c",
+  "sections": [
+    { "title": "Avant-première", "caption": "Cinéma Club de l'Étoile, Paris", "media": "mp-avant-premiere", "placeholderCount": 13 },
+    { "title": "Photos voyage", "media": "mp-voyage", "placeholderCount": 32 }
+  ]
+}

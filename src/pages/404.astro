@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/media';
+---
+<Base title="Page introuvable">
+  <div class="wrap">
+    <header class="page-head">
+      <span class="mono">Erreur 404</span>
+      <h1 class="display">Hors champ</h1>
+    </header>
+    <p class="lede">Cette page n'existe pas, ou plus.</p>
+    <a href={url('/')} class="link-arrow">Retour à l'accueil <span>→</span></a>
+  </div>
+</Base>

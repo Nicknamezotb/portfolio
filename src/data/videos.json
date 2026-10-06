@@ -1,0 +1,32 @@
+[
+  {
+    "category": "Prestations",
+    "items": [
+      { "title": "Aftermovie — Remise des diplômes ISEP 2026", "credit": "Tournage & montage", "youtube": "7njct8RJ4WA", "year": "2026" },
+      { "title": "Interview ISEP Alumni — Seehaptic", "credit": "Tournage & montage", "youtube": "PMtkMxTR3Ys" },
+      { "title": "Aftermovie — Hackathon IA mixité & inclusion en entreprise", "subtitle": "Cercle InterL, LENOVO, ISEP", "credit": "Tournage & montage", "youtube": "UNw12qmtXDM" },
+      { "title": "Interview ISEP Alumni — CityMood", "credit": "Tournage & montage", "youtube": "M_PWLtt6eKo" }
+    ]
+  },
+  {
+    "category": "Documentaires de voyage",
+    "items": [
+      { "title": "Projet Machu Picchu", "subtitle": "Documentaire, avant-première au cinéma Club de l'Étoile, Paris", "youtube": "0ZN13Pi7R9c", "year": "2025", "link": "/machu-picchu" },
+      { "title": "Bavière 2024 — Et si vous faisiez une pause ?", "youtube": "fi7rIJfJuJM", "year": "2024" },
+      { "title": "Dolomites 2023", "subtitle": "DJI Mavic · 4K", "youtube": "csmri7LXf5s", "year": "2023" }
+    ]
+  },
+  {
+    "category": "Projets associatifs",
+    "items": [
+      { "title": "HighOnes BDP", "subtitle": "Interview des présidents des bureaux de promotion pendant la campagne", "youtube": "i6hOubOY1yo" }
+    ]
+  },
+  {
+    "category": "Clips",
+    "items": [
+      { "title": "ROIS", "subtitle": "Son de campagne — Bureau de promo Nevera", "credit": "Montage, enregistrement & mix/mastering", "youtube": "CZnX5SpGypg" },
+      { "title": "E.X.A.L.T.E", "subtitle": "Son de campagne — Bureau des élèves Exalte", "credit": "Enregistrement & mix/mastering", "youtube": "mirjYh3ZRbo" }
+    ]
+  }
+]

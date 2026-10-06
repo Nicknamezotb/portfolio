@@ -1,0 +1,78 @@
+---
+import { url } from '../lib/media';
+const links = [
+  { href: '/photo', label: 'Photo' },
+  { href: '/video', label: 'Vidéo' },
+  { href: '/creations', label: 'Créations' },
+  { href: '/contact', label: 'Contact' },
+];
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const isActive = (href: string) => path === href || path.startsWith(href + '/');
+---
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href={url('/')} class="brand display" aria-label="Accueil">Quentin Girard</a>
+    <button class="burger" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+    <nav id="menu" aria-label="Navigation principale">
+      {links.map((l) => (
+        <a href={url(l.href)} class:list={{ active: isActive(l.href) }} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed; inset: 0 0 auto; z-index: 50;
+    transition: background .4s, backdrop-filter .4s, border-color .4s;
+    border-bottom: 1px solid transparent;
+  }
+  :global(body.scrolled) .nav {
+    background: rgb(20 21 26 / .82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .brand { font-size: 26px; letter-spacing: .04em; }
+  nav { display: flex; gap: clamp(20px, 3vw, 40px); }
+  nav a {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); transition: color .25s; position: relative; padding: 6px 0;
+  }
+  nav a:hover, nav a.active { color: var(--text); }
+  nav a.active::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--accent);
+  }
+  .burger { display: none; background: none; border: 0; width: 40px; height: 40px; cursor: pointer; position: relative; margin-right: -8px; }
+  .burger span { position: absolute; left: 9px; right: 9px; height: 1.5px; background: var(--text); transition: transform .35s var(--ease); }
+  .burger span:first-child { top: 16px; } .burger span:last-child { top: 23px; }
+
+  @media (max-width: 720px) {
+    .burger { display: block; z-index: 2; }
+    nav {
+      position: fixed; inset: 0; flex-direction: column; justify-content: center; align-items: flex-start;
+      padding: 0 var(--gutter); gap: 8px; background: var(--bg);
+      opacity: 0; visibility: hidden; transition: opacity .35s, visibility .35s;
+    }
+    nav a { font-family: var(--font-display); font-size: 56px; letter-spacing: .02em; text-transform: none; color: var(--text); }
+    nav a.active { color: var(--accent); } nav a.active::after { display: none; }
+    :global(body.menu-open) nav { opacity: 1; visibility: visible; }
+    :global(body.menu-open) .burger span:first-child { transform: translateY(3.5px) rotate(45deg); }
+    :global(body.menu-open) .burger span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+    :global(body.menu-open) { overflow: hidden; }
+  }
+</style>
+
+<script>
+  const burger = document.querySelector<HTMLButtonElement>('.burger')!;
+  burger.addEventListener('click', () => {
+    const open = document.body.classList.toggle('menu-open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  const onScroll = () => document.body.classList.toggle('scrolled', scrollY > 24);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
