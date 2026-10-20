@@ -133,12 +133,13 @@ const entries = [
       const mobile = innerWidth < 720;
 
       if (heroText) {
-        const p = lerp(heroText, 'p', clamp(scrollY / (vh * 0.7)));
-        moving ||= p.moving;
-        heroText.style.opacity = String(1 - p.v);
-        heroText.style.transform = `translate3d(0, ${p.v * -40}px, 0)`;
-        heroText.style.filter = p.v > 0.01 ? `blur(${p.v * 4}px)` : '';
-        if (heroBg) heroBg.style.transform = `translate3d(0, ${p.v * vh * 0.12}px, 0)`;
+        // Sans lissage : le hero suit exactement le défilement, donc plus aucun mouvement
+        // résiduel une fois revenu tout en haut (et rien ne bouge pendant le rebond du navigateur).
+        const p = clamp(Math.max(0, scrollY) / (vh * 0.7));
+        heroText.style.opacity = String(1 - p);
+        heroText.style.transform = p ? `translate3d(0, ${p * -40}px, 0)` : '';
+        heroText.style.filter = p > 0.01 ? `blur(${p * 4}px)` : '';
+        if (heroBg) heroBg.style.transform = p ? `translate3d(0, ${p * vh * 0.1}px, 0)` : '';
       }
 
       for (const el of fades) {
@@ -192,7 +193,7 @@ const entries = [
   }
   .hero-bg {
     will-change: transform;
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    position: absolute; left: 0; top: -6%; width: 100%; height: 112%; object-fit: cover; /* dépasse en haut et en bas : le décalage ne découvre jamais le fond */
     animation: settle 2.8s var(--ease) both;
   }
   @keyframes settle { from { opacity: 0; } }
