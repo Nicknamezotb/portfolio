@@ -60,7 +60,6 @@ const entries = [
     {worksBg && <div class="works-bgwrap" aria-hidden="true"><img class="works-bg" data-par="0.05" src={worksBg.src} style={cropStyle(worksBg)} alt="" loading="lazy" /></div>}
     <div class="wrap works-inner">
     <header class="works-head">
-      <p class="mono reveal">Sélection</p>
       <h2 class="display reveal" style="--i:1">Travaux</h2>
     </header>
 
@@ -302,10 +301,12 @@ const entries = [
   .work-cap h3 { font-size: clamp(28px, 2.6vw, 38px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); }
   .more { display: inline-flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); font-size: 10px; }
 
-  .work:hover .work-media { transform: translateY(-3px); box-shadow: 0 32px 56px -28px rgb(0 0 0 / .5), 0 1px 3px rgb(0 0 0 / .06); }
+  /* Survol : seule la carte visée réagit (elle se soulève, l'ombre s'étire, le texte monte) */
+  .work:hover .work-media { transform: translateY(-8px); box-shadow: 0 40px 70px -30px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .06); }
+  .work-cap h3 { transition: transform .8s var(--ease-out); }
+  .work:hover .work-cap h3 { transform: translateY(-4px); }
     .work:hover .work-media::after { opacity: 1; }
   .work:hover .more { opacity: 1; transform: none; }
-  .works-grid:has(.work:hover) .work:not(:hover) .work-media { opacity: .55; filter: saturate(.7); }
 
   /* ---------- À la une : grand panneau avec le même voile que le hero ---------- */
   .featured { padding-block: clamp(40px, 8vh, 100px) 0; }
