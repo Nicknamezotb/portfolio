@@ -53,7 +53,6 @@ const entries = [
     </div>
 
     {home.heroCaption && <p class="mono caption">{home.heroCaption}</p>}
-    <a href="#travaux" class="scroll" aria-label="Défiler"><span></span></a>
   </section>
 
   <section id="travaux" class:list={["works", { "has-bg": worksBg }]}>
@@ -261,16 +260,10 @@ const entries = [
   }
   .side-right .caption { right: auto; left: var(--gutter); }
 
-  .scroll {
-    position: absolute; z-index: 2; left: 50%; bottom: 0; width: 1px; height: 56px; overflow: hidden;
-    background: color-mix(in srgb, var(--text) 18%, transparent);
-  }
-  .scroll span { position: absolute; inset: 0; background: var(--text); animation: drip 2.2s var(--ease) infinite; }
-  @keyframes drip { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
 
   /* Sans photo : hero typographique simple */
   .hero.bare { height: 80svh; }
-  .hero.bare .veil, .hero.bare .scroll { display: none; }
+  .hero.bare .veil { display: none; }
 
   /* ---------- Travaux : trois cartes compactes, légèrement décalées, sur une photo de fond estompée ---------- */
   .works { position: relative; overflow: hidden; padding-block: clamp(96px, 16vh, 170px) clamp(72px, 12vh, 130px); }
@@ -370,7 +363,6 @@ const entries = [
     .side-right .hero-text, .side-right .kicker, .side-right .ctas { text-align: left; justify-content: flex-start; }
     .side-right .tagline { margin-left: 0; }
     .caption, .side-right .caption { top: 84px; bottom: auto; right: var(--gutter); left: auto; }
-    .scroll { display: none; }
   }
   @media (max-width: 640px) {
     .feat { height: 82svh; }
