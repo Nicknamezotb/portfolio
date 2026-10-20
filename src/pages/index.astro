@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { content, url, cover, single, ytThumb, cropStyle } from '../lib/media';
+import { content, url, cover, single, ytThumb, cropStyle, rich } from '../lib/media';
 
 const { settings, home, galleries, videos, creations, projects } = content;
 const hero = single(home.heroPhoto) ?? cover([], 'hero');
@@ -84,7 +84,7 @@ const entries = [
         <div class="feat-text">
           <p class="mono">À la une{featured.kicker && ` · ${featured.kicker}`}</p>
           <h3 class="display">{featured.title}</h3>
-          <p class="feat-intro">{featured.intro.split(/\n\s*\n/)[0]}</p>
+          <p class="feat-intro" set:html={rich(featured.intro.split(/\n\s*\n/)[0])} />
           <span class="link-arrow">Voir le projet <span>→</span></span>
         </div>
         {(featured.place || featured.date) && <p class="mono feat-meta">{[featured.place, featured.date].filter(Boolean).join(' · ')}</p>}

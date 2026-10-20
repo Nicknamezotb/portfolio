@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Backdrop from '../../components/Backdrop.astro';
 import PhotoGrid from '../../components/PhotoGrid.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
-import { content, url, photos, cover } from '../../lib/media';
+import { content, url, photos, cover, rich } from '../../lib/media';
 
 export function getStaticPaths() {
   return content.projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
@@ -13,7 +13,7 @@ const paragraphs = p.intro.split(/\n\s*\n/).filter(Boolean);
 const meta = [p.kicker, p.place, p.date].filter(Boolean).join(' · ');
 const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((s) => s.photos), p.slug);
 ---
-<Base title={p.title} description={paragraphs[0]?.slice(0, 160)}>
+<Base title={p.title} description={paragraphs[0]?.replace(/\*\*/g, '').slice(0, 160)}>
   <Backdrop photo={backdrop} />
   <div class="wrap">
     <header class="page-head">
@@ -21,32 +21,63 @@ const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((
       {meta && <span class="mono">{meta}</span>}
     </header>
 
-    <div class="intro">
-      {paragraphs.map((t) => <p class="lede">{t}</p>)}
+    <!-- Texte et vidéo côte à côte : pas de grand vide à gauche du texte -->
+    <div class:list={['intro', { 'has-video': p.youtube }]}>
+      <div class="text">
+        {paragraphs.map((t) => <p set:html={rich(t)} />)}
+      </div>
+
+      {p.youtube && (
+        <article class="film reveal">
+          <div class="frame"><VideoEmbed id={p.youtube} title={p.title} /></div>
+          <div class="caption">
+            <h3>{p.kicker || 'Vidéo'}</h3>
+            {(p.place || p.date) && <p class="mono">{[p.place, p.date].filter(Boolean).join(' · ')}</p>}
+          </div>
+        </article>
+      )}
     </div>
 
-    {p.youtube && (
-      <section class="section">
-        <div class="section-title"><h2 class="display">{p.kicker || 'Vidéo'}</h2></div>
-        <VideoEmbed id={p.youtube} title={p.title} />
-      </section>
-    )}
-
     {p.sections.map((s, i) => (
-      <section class="section">
-        <div class="section-title">
+      <section class="block">
+        <div class="block-head">
           <h2 class="display">{s.title}</h2>
           {s.caption && <span class="mono">{s.caption}</span>}
         </div>
-        <PhotoGrid photos={photos(s.photos, `${p.slug}-${i}`, 9)} label={`${p.title}, ${s.title}`} />
+        <PhotoGrid photos={photos(s.photos, `${p.slug}-${i}`, 10)} label={`${p.title}, ${s.title}`} columns={5} />
       </section>
     ))}
 
-    {p.moreLink && <a href={url(p.moreLink)} class="link-arrow">{p.moreLabel || 'En voir plus'} <span>→</span></a>}
+    {p.moreLink && <a href={url(p.moreLink)} class="link-arrow more">{p.moreLabel || 'En voir plus'} <span>→</span></a>}
   </div>
 </Base>
 
 <style>
-  .intro { max-width: 640px; margin-left: auto; }
-  .intro .lede { margin: 0 0 1.1em; }
+  .intro { display: grid; gap: clamp(28px, 4vw, 56px); align-items: start; }
+  .intro.has-video { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .text p { margin: 0 0 1em; font-size: clamp(15px, 1.15vw, 17px); line-height: 1.75; color: color-mix(in srgb, var(--text) 82%, var(--bg)); max-width: 58ch; }
+  .text p:last-child { margin-bottom: 0; }
+  .text :global(strong) { color: var(--text); font-weight: 650; }
+
+  /* Même carte vidéo que sur la page Vidéo : cliquable, coins arrondis, se soulève au survol */
+  .frame {
+    border-radius: 6px; overflow: hidden; background: #1c1d22;
+    box-shadow: 0 24px 48px -28px rgb(0 0 0 / .4), 0 1px 3px rgb(0 0 0 / .05);
+    transition: box-shadow .9s var(--ease-out), transform .9s var(--ease-out);
+  }
+  .film:hover .frame { transform: translateY(-6px); box-shadow: 0 40px 70px -30px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .06); }
+  .caption { padding-top: 14px; }
+  .caption h3 { font-size: 16px; font-weight: 550; line-height: 1.4; margin: 0 0 4px; transition: color .4s; }
+  .film:hover h3 { color: var(--accent); }
+  .caption .mono { margin: 0; }
+
+  /* Sections de photos plus compactes */
+  .block { margin-top: clamp(48px, 8vh, 88px); }
+  .block-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .block-head h2 { font-size: clamp(26px, 2.6vw, 34px); }
+  .more { margin-top: clamp(32px, 5vh, 56px); }
+
+  @media (max-width: 860px) {
+    .intro.has-video { grid-template-columns: 1fr; }
+  }
 </style>

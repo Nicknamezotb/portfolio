@@ -55,3 +55,9 @@ export function cropStyle(p?: { crop?: { x: number; y: number; zoom: number } } 
   if (!c) return undefined;
   return `object-position:${c.x}% ${c.y}%;transform-origin:${c.x}% ${c.y}%;scale:${c.zoom}`;
 }
+
+/** Texte enrichi minimal : **mot** → gras. Le reste est échappé (aucun HTML injecté). */
+export function rich(text: string) {
+  const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return esc.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}

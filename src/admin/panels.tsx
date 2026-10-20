@@ -360,7 +360,7 @@ export function Projects() {
             <Field label="Type" value={p.kicker} onChange={(v) => up((y) => (y.kicker = v))} placeholder="Documentaire, Reportage…" />
             <Field label="Lieu" value={p.place} onChange={(v) => up((y) => (y.place = v))} />
             <Field label="Date" value={p.date} onChange={(v) => up((y) => (y.date = v))} placeholder="Juillet 2025" />
-            <Area label="Texte de présentation" rows={7} value={p.intro} onChange={(v) => up((y) => (y.intro = v))} hint="Laisse une ligne vide entre deux paragraphes." />
+            <Area label="Texte de présentation" rows={7} value={p.intro} onChange={(v) => up((y) => (y.intro = v))} hint="Laisse une ligne vide entre deux paragraphes. Entoure un mot de **deux étoiles** pour le mettre en gras." />
             <YouTubeField label="Vidéo principale (optionnelle)" value={p.youtube} onChange={(v) => up((y) => (y.youtube = v))} />
             <PhotoManager
               label="Image de couverture (pour l'accueil)"
