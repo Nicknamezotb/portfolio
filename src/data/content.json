@@ -50,14 +50,36 @@
       }
     },
     "cards": {
-      "photo": null,
-      "video": null,
-      "creations": {
-        "src": "/media/a-75b531be9c93.webp",
-        "thumb": "/media/a-75b531be9c93-sm.webp",
-        "w": 2000,
+      "photo": {
+        "src": "/media/a-63ee2cac44a1.webp",
+        "thumb": "/media/a-63ee2cac44a1-sm.webp",
+        "w": 1333,
         "h": 2000,
+        "alt": "",
+        "crop": {
+          "x": 51.2,
+          "y": 30.7,
+          "zoom": 1
+        }
+      },
+      "video": {
+        "src": "/media/mvgs75gpbx1u2.webp",
+        "thumb": "/media/mvgs75gpbx1u2-sm.webp",
+        "w": 2000,
+        "h": 1333,
         "alt": ""
+      },
+      "creations": {
+        "src": "/media/a-948511b6a008.webp",
+        "thumb": "/media/a-948511b6a008-sm.webp",
+        "w": 1333,
+        "h": 2000,
+        "alt": "",
+        "crop": {
+          "x": 66.3,
+          "y": 26.8,
+          "zoom": 1
+        }
       }
     },
     "featured": "machu-picchu"
