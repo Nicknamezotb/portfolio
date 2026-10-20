@@ -28,13 +28,13 @@
   "home": {
     "heroCaption": "",
     "heroSide": "left",
-    "heroOpacity": 55,
+    "heroOpacity": 60,
     "tagline": "Je raconte des histoires en images : reportages, événements, voyages...",
     "heroPhoto": {
-      "src": "/media/mvgpoqgyt465o.webp",
-      "thumb": "/media/mvgpoqgyt465o-sm.webp",
-      "w": 1333,
-      "h": 2000,
+      "src": "/media/mvgprnuebad2l.webp",
+      "thumb": "/media/mvgprnuebad2l-sm.webp",
+      "w": 2000,
+      "h": 1333,
       "alt": ""
     },
     "cards": {
