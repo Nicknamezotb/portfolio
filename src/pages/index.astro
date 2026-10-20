@@ -298,17 +298,23 @@ const entries = [
   }
   .work-cap {
     position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px;
-    color: #fff; display: grid; gap: 4px;
+    color: #fff; display: grid; justify-items: start; gap: 12px;
     transform: translateY(calc((1 - var(--enter, 1)) * 14px));
+    transition: transform .8s var(--ease-out);
   }
+
+  /* Légende : trois lignes alignées à gauche, séparées par le même écart.
+     text-box rogne l'espace vide intégré aux polices (sinon les écarts paraissent inégaux). */
+  .work-cap > * { margin: 0; text-box: trim-both cap alphabetic; }
+  .work-cap h3 { line-height: 1; margin-left: -0.04em; } /* compense la marge intégrée à gauche de la police des titres */
   .work-cap .mono { color: rgb(255 255 255 / .8); font-size: 10px; }
   .work-cap h3 { font-size: clamp(28px, 2.6vw, 38px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); }
-  .more { display: inline-flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); font-size: 10px; }
+  .more { display: block; /* bloc (pas flex) : l'espace vide de la police est rogné comme pour les autres lignes */ opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); font-size: 10px; }
+  .more span { margin-left: 6px; }
 
   /* Survol : seule la carte visée réagit (elle se soulève, l'ombre s'étire, le texte monte) */
   .work:hover .work-media { transform: translateY(-8px); box-shadow: 0 40px 70px -30px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .06); }
-  .work-cap h3 { transition: transform .8s var(--ease-out); }
-  .work:hover .work-cap h3 { transform: translateY(-4px); }
+  .work:hover .work-cap { transform: translateY(-4px); }
     .work:hover .work-media::after { opacity: 1; }
   .work:hover .more { opacity: 1; transform: none; }
 

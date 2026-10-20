@@ -41,16 +41,22 @@ const src = img ? (large ? img.src ?? img.thumb : img.thumb ?? img.src) : undefi
     background: linear-gradient(to top, rgb(10 11 14 / .6) 0%, rgb(10 11 14 / .14) 42%, transparent 66%);
     opacity: .9; transition: opacity .9s var(--ease-out);
   }
-  .cap { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; color: #fff; display: grid; gap: 4px; }
+  .cap { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 18px; color: #fff; display: grid; justify-items: start; gap: 12px; transition: transform .8s var(--ease-out); }
+  /* Légende : trois lignes alignées à gauche, séparées par le même écart.
+     text-box rogne l'espace vide intégré aux polices (sinon les écarts paraissent inégaux). */
+  .cap > * { margin: 0; text-box: trim-both cap alphabetic; }
+  .cap h2 { line-height: 1; margin-left: -0.04em; } /* compense la marge intégrée à gauche de la police des titres */
+
   .cap .mono { color: rgb(255 255 255 / .8); font-size: 10px; }
-  .cap h2 { font-size: clamp(26px, 2.4vw, 36px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); transition: transform .8s var(--ease-out); }
+  .cap h2 { font-size: clamp(26px, 2.4vw, 36px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); }
   .sub { margin: 0; font-size: 13px; line-height: 1.45; color: rgb(255 255 255 / .82); max-width: 40ch; }
-  .more { display: inline-flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  .more { display: block; /* bloc (pas flex) : l'espace vide de la police est rogné comme pour les autres lignes */ opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  .more span { margin-left: 6px; }
 
   /* Survol : seule la carte visée réagit */
   .tile:hover .media { transform: translateY(-8px); box-shadow: 0 40px 70px -30px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .06); }
   .tile:hover .media::after { opacity: 1; }
-  .tile:hover h2 { transform: translateY(-4px); }
+  .tile:hover .cap { transform: translateY(-4px); }
   .tile:hover .more { opacity: 1; transform: none; }
   @media (hover: none) { .more { opacity: 1; transform: none; } }
 </style>
