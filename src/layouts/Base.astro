@@ -39,6 +39,9 @@ const { bg, text, accent } = settings.theme;
     </main>
     <Footer />
     <script>
+      import { initOpticalAlign } from '../lib/optical';
+      initOpticalAlign();
+
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       }, { rootMargin: '0px 0px -6% 0px' });
