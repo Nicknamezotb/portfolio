@@ -3,6 +3,10 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { content, url } from '../lib/media';
+// Polices préchargées : prêtes avant le premier affichage, donc pas de « flash » de police de secours
+import fontDisplay from '@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2?url';
+import fontBody from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import fontSmall from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
 
 interface Props { title?: string; description?: string; bodyClass?: string }
 const { settings } = content;
@@ -16,6 +20,7 @@ const { bg, text, accent } = settings.theme;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {[fontDisplay, fontBody, fontSmall].map((f) => <link rel="preload" href={f} as="font" type="font/woff2" crossorigin />)}
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
