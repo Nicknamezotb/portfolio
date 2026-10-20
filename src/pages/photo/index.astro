@@ -11,10 +11,10 @@ const { galleries } = content;
     </header>
 
     <div class="cards">
-      {galleries.map((g) => {
+      {galleries.map((g, i) => {
         const c = cover(g.photos, g.slug);
         return (
-          <a href={url(`/photo/${g.slug}`)} class="card reveal">
+          <a href={url(`/photo/${g.slug}`)} class="card reveal" style={"--i:" + (i % 3)}>
             <div class="img-frame">{c && <img src={c.thumb} alt="" loading="lazy" />}</div>
             <div class="meta">
               <h2 class="display">{g.title}</h2>

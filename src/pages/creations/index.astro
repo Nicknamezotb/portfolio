@@ -11,10 +11,10 @@ const { creations } = content;
     </header>
 
     <div class="cards">
-      {creations.map((c) => {
+      {creations.map((c, i) => {
         const img = cover(c.sections.flatMap((s) => s.photos), c.slug);
         return (
-          <a href={url(`/creations/${c.slug}`)} class="card reveal">
+          <a href={url(`/creations/${c.slug}`)} class="card reveal" style={"--i:" + (i % 3)}>
             <div class="img-frame">{img && <img src={img.thumb} alt="" loading="lazy" />}</div>
             <div class="meta">
               <h2 class="display">{c.title}</h2>

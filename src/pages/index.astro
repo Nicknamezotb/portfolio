@@ -32,12 +32,12 @@ const entries = [
 ---
 <Base bodyClass="home">
   <section class:list={['hero', `side-${side}`, { bare: !hero }]} style={`--veil:${opacity}%`}>
-    {hero && <img class="hero-bg" src={hero.src} alt="" fetchpriority="high" width={hero.w} height={hero.h} />}
+    {hero && <img data-hero-bg class="hero-bg" src={hero.src} alt="" fetchpriority="high" width={hero.w} height={hero.h} />}
     <div class="veil" aria-hidden="true"></div>
 
-    <div class="hero-inner wrap">
+    <div class="hero-inner wrap" data-hero-fade>
       <div class="hero-text">
-        <p class="mono kicker"><span class="line" aria-hidden="true"></span>{settings.role}</p>
+        <p class="mono kicker">{settings.role}</p>
         <h1 class="display">
           <span class="w">{first}</span>
           {rest.length > 0 && <span class="w">{rest.join(' ')}</span>}
@@ -55,12 +55,12 @@ const entries = [
   </section>
 
   <section id="travaux" class="wrap section">
-    <div class="section-title">
+    <div class="section-title reveal">
       <h2 class="display">Travaux</h2>
     </div>
     <div class="entries">
-      {entries.map((e) => (
-        <a href={url(e.href)} class="entry reveal">
+      {entries.map((e, i) => (
+        <a href={url(e.href)} class="entry reveal" style={`--i:${i + 1}`}>
           <div class="img-frame">{e.img && <img src={e.img} alt="" loading="lazy" />}</div>
           <div class="entry-meta">
             <h3 class="display">{e.title}</h3>
@@ -90,6 +90,26 @@ const entries = [
   )}
 </Base>
 
+<script>
+  // Défilement : le texte du hero s'estompe et monte, la photo glisse plus lentement (parallaxe)
+  const fade = document.querySelector<HTMLElement>('[data-hero-fade]');
+  const bg = document.querySelector<HTMLElement>('[data-hero-bg]');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (fade && !still) {
+    let ticking = false;
+    const update = () => {
+      const p = Math.min(1, scrollY / (innerHeight * 0.7));
+      fade.style.opacity = String(1 - p);
+      fade.style.transform = `translate3d(0, ${p * -60}px, 0)`;
+      fade.style.filter = p > 0.02 ? `blur(${p * 6}px)` : '';
+      if (bg) bg.style.transform = `translate3d(0, ${scrollY * 0.25}px, 0) scale(${1 + p * 0.06})`;
+      ticking = false;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+</script>
+
 <style>
   /* ---------- Hero plein écran, texte incrusté sur un voile ---------- */
   .hero {
@@ -97,6 +117,7 @@ const entries = [
     display: flex; align-items: flex-end;
   }
   .hero-bg {
+    will-change: transform;
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     animation: settle 2.8s var(--ease) both;
   }
@@ -129,19 +150,18 @@ const entries = [
   @keyframes veilInR { from { opacity: 0; transform: translateX(40px); } }
 
 
-  .hero-inner { position: relative; z-index: 2; display: flex; padding-bottom: clamp(48px, 10vh, 112px); }
+  .hero-inner { will-change: opacity, transform; position: relative; z-index: 2; display: flex; padding-bottom: clamp(48px, 10vh, 112px); }
   .side-right .hero-inner { justify-content: flex-end; }
   .hero-text { max-width: 460px; }
   .side-right .hero-text { text-align: right; }
 
-  .kicker { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; color: var(--text); }
+  .kicker { display: flex; align-items: center; margin: 0 0 22px; color: var(--text); text-shadow: var(--soft-shadow); }
   .side-right .kicker { justify-content: flex-end; }
-  .kicker .line { width: 32px; height: 1px; background: var(--accent); }
-  .hero h1 { font-size: clamp(64px, 8.5vw, 132px); line-height: .86; }
+  .hero h1 { font-size: clamp(64px, 8.5vw, 132px); line-height: .86; text-shadow: var(--soft-shadow); }
   .hero h1 .w { display: block; animation: rise 1.2s var(--ease) both; }
-  .hero h1 .w:nth-child(2) { animation-delay: .12s; color: color-mix(in srgb, var(--text) 55%, transparent); }
+  .hero h1 .w:nth-child(2) { animation-delay: .12s; }
   @keyframes rise { from { opacity: 0; transform: translateY(28px); } }
-  .tagline { margin: 26px 0 30px; font-size: 16px; line-height: 1.65; max-width: 36ch; animation: rise 1.2s .25s var(--ease) both; }
+  .tagline { text-shadow: var(--soft-shadow); margin: 26px 0 30px; font-size: 16px; line-height: 1.65; max-width: 36ch; animation: rise 1.2s .25s var(--ease) both; }
   .side-right .tagline { margin-left: auto; }
   .ctas { display: flex; gap: 28px; animation: rise 1.2s .35s var(--ease) both; }
   .side-right .ctas { justify-content: flex-end; }
