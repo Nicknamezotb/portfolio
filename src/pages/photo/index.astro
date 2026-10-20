@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { content, url, cover } from '../../lib/media';
+import { content, url, cover, cropStyle } from '../../lib/media';
 const { galleries } = content;
 ---
 <Base title="Photo" description="Galeries photo : événements, concerts, conférences et voyages.">
@@ -15,7 +15,7 @@ const { galleries } = content;
         const c = cover(g.photos, g.slug);
         return (
           <a href={url(`/photo/${g.slug}`)} class="card reveal" style={"--i:" + (i % 3)}>
-            <div class="img-frame">{c && <img src={c.thumb} alt="" loading="lazy" />}</div>
+            <div class="img-frame">{c && <img src={c.thumb} style={cropStyle(c)} alt="" loading="lazy" />}</div>
             <div class="meta">
               <h2 class="display">{g.title}</h2>
               <span class="mono">{[g.place, g.year].filter(Boolean).join(' · ')}</span>
@@ -30,7 +30,8 @@ const { galleries } = content;
 <style>
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 48px) clamp(12px, 2vw, 24px); }
   .img-frame { aspect-ratio: 4 / 3; }
-  .card:hover img { transform: scale(1.04); }
+  .card img { transition: opacity .7s var(--ease-out); }
+  .card:hover img { opacity: .88; }
   .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; }
   .meta h2 { font-size: clamp(24px, 2.2vw, 30px); transition: color .3s; }
   .card:hover h2 { color: var(--accent); }

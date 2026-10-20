@@ -1,6 +1,9 @@
 // Structure de src/data/content.json — partagée par le site et le back-office.
 
-export type Photo = { src: string; thumb: string; w: number; h: number; alt?: string };
+/** crop : cadrage d'une photo utilisée en couverture/fond (point visible en %, zoom ≥ 1). Non destructif. */
+export type Crop = { x: number; y: number; zoom: number };
+
+export type Photo = { src: string; thumb: string; w: number; h: number; alt?: string; crop?: Crop };
 
 export type Social = { label: string; url: string };
 

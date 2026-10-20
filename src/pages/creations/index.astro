@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { content, url, cover } from '../../lib/media';
+import { content, url, cover, cropStyle } from '../../lib/media';
 const { creations } = content;
 ---
 <Base title="Créations visuelles" description="Identités visuelles réalisées pour la vie associative de l'ISEP.">
@@ -15,7 +15,7 @@ const { creations } = content;
         const img = cover(c.sections.flatMap((s) => s.photos), c.slug);
         return (
           <a href={url(`/creations/${c.slug}`)} class="card reveal" style={"--i:" + (i % 3)}>
-            <div class="img-frame">{img && <img src={img.thumb} alt="" loading="lazy" />}</div>
+            <div class="img-frame">{img && <img src={img.thumb} style={cropStyle(img)} alt="" loading="lazy" />}</div>
             <div class="meta">
               <h2 class="display">{c.title}</h2>
               <span class="mono">{c.year}</span>
@@ -32,7 +32,8 @@ const { creations } = content;
 <style>
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 48px) clamp(12px, 2vw, 24px); }
   .img-frame { aspect-ratio: 1; }
-  .card:hover img { transform: scale(1.04); }
+  .card img { transition: opacity .7s var(--ease-out); }
+  .card:hover img { opacity: .88; }
   .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; }
   .meta h2 { font-size: clamp(26px, 2.4vw, 34px); transition: color .3s; }
   .card:hover h2 { color: var(--accent); }

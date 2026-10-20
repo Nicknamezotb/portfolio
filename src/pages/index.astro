@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { content, url, cover, single, ytThumb } from '../lib/media';
+import { content, url, cover, single, ytThumb, cropStyle } from '../lib/media';
 
 const { settings, home, galleries, videos, creations, projects } = content;
 const hero = single(home.heroPhoto) ?? cover([], 'hero');
@@ -20,21 +20,21 @@ const cards = home.cards ?? { photo: null, video: null, creations: null };
 const entries = [
   {
     href: '/photo', title: 'Photo', meta: `${galleries.length} galeries`,
-    img: single(cards.photo)?.src ?? cover(galleries[0]?.photos, galleries[0]?.slug ?? 'photo')?.src,
+    pic: single(cards.photo) ?? cover(galleries[0]?.photos, galleries[0]?.slug ?? 'photo'),
   },
   {
     href: '/video', title: 'Vidéo', meta: `${videoCount} projets`,
-    img: single(cards.video)?.src ?? (firstVideo ? ytThumb(firstVideo.youtube) : undefined),
+    pic: single(cards.video) ?? (firstVideo ? { src: ytThumb(firstVideo.youtube) } : null),
   },
   {
     href: '/creations', title: 'Créations', meta: `${creations.length} identités visuelles`,
-    img: single(cards.creations)?.src ?? cover(creations[0]?.sections.flatMap((s) => s.photos), creations[0]?.slug ?? 'creations')?.src,
+    pic: single(cards.creations) ?? cover(creations[0]?.sections.flatMap((s) => s.photos), creations[0]?.slug ?? 'creations'),
   },
 ];
 ---
 <Base bodyClass="home">
   <section class:list={['hero', `side-${side}`, { bare: !hero }]} style={`--veil:${opacity}%`}>
-    {hero && <img data-hero-bg class="hero-bg" src={hero.src} alt="" fetchpriority="high" width={hero.w} height={hero.h} />}
+    {hero && <img data-hero-bg class="hero-bg" src={hero.src} style={cropStyle(hero)} alt="" fetchpriority="high" width={hero.w} height={hero.h} />}
     <div class="veil" aria-hidden="true"></div>
 
     <div class="hero-inner wrap" data-hero-fade>
@@ -57,7 +57,7 @@ const entries = [
   </section>
 
   <section id="travaux" class:list={["works", { "has-bg": worksBg }]}>
-    {worksBg && <div class="works-bgwrap" aria-hidden="true"><img class="works-bg" data-par="0.05" src={worksBg.src} alt="" loading="lazy" /></div>}
+    {worksBg && <div class="works-bgwrap" aria-hidden="true"><img class="works-bg" data-par="0.05" src={worksBg.src} style={cropStyle(worksBg)} alt="" loading="lazy" /></div>}
     <div class="wrap works-inner">
     <header class="works-head">
       <p class="mono reveal">Sélection</p>
@@ -69,7 +69,7 @@ const entries = [
       {entries.map((e, i) => (
         <a href={url(e.href)} class={`work work-${i + 1}`} data-par={[0.02, -0.025, 0.035][i]} data-fade>
           <div class="work-media">
-            <div class="zw">{e.img && <img data-zoom src={e.img} alt="" loading="lazy" />}</div>
+            <div class="zw">{e.pic && <img data-zoom src={e.pic.src} style={cropStyle(e.pic as any)} alt="" loading="lazy" />}</div>
             <div class="work-cap">
               <span class="mono">{e.meta}</span>
               <h3 class="display">{e.title}</h3>
@@ -85,7 +85,7 @@ const entries = [
   {featured && (
     <section class="featured">
       <a href={url(`/projets/${featured.slug}`)} class="feat" data-fade>
-        {featuredImg && <img data-zoom data-par="0.04" class="feat-img" src={featuredImg.src ?? featuredImg.thumb} alt="" loading="lazy" />}
+        {featuredImg && <img data-zoom data-par="0.04" class="feat-img" src={featuredImg.src ?? featuredImg.thumb} style={cropStyle(featuredImg as any)} alt="" loading="lazy" />}
         <div class="feat-veil" aria-hidden="true"></div>
         <div class="feat-text">
           <p class="mono">À la une{featured.kicker && ` · ${featured.kicker}`}</p>
@@ -136,9 +136,9 @@ const entries = [
         const p = lerp(heroText, 'p', clamp(scrollY / (vh * 0.7)));
         moving ||= p.moving;
         heroText.style.opacity = String(1 - p.v);
-        heroText.style.transform = `translate3d(0, ${p.v * -70}px, 0)`;
-        heroText.style.filter = p.v > 0.01 ? `blur(${p.v * 8}px)` : '';
-        if (heroBg) heroBg.style.transform = `translate3d(0, ${p.v * vh * 0.18}px, 0) scale(${1 + p.v * 0.08})`;
+        heroText.style.transform = `translate3d(0, ${p.v * -40}px, 0)`;
+        heroText.style.filter = p.v > 0.01 ? `blur(${p.v * 4}px)` : '';
+        if (heroBg) heroBg.style.transform = `translate3d(0, ${p.v * vh * 0.12}px, 0)`;
       }
 
       for (const el of fades) {
@@ -165,7 +165,7 @@ const entries = [
       for (const img of zooms) {
         const r = (img.closest('.work-media, .feat') ?? img).getBoundingClientRect();
         const t = clamp(1 - Math.abs(r.top + r.height / 2 - vh / 2) / vh);
-        const s = lerp(img, 's', 1.045 - 0.045 * smooth(t), 0.1);
+        const s = lerp(img, 's', 1, 0.1);
         moving ||= s.moving;
         // l'image de « À la une » a aussi une parallaxe : on combine les deux
         const y = img.dataset.par ? (state.get(img)?.y ?? 0) : 0;
@@ -195,7 +195,7 @@ const entries = [
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     animation: settle 2.8s var(--ease) both;
   }
-  @keyframes settle { from { transform: scale(1.08); opacity: 0; } 30% { opacity: 1; } }
+  @keyframes settle { from { opacity: 0; } }
 
   /* Voile : verre dépoli teinté de la couleur du fond, qui s'efface vers la photo */
   .veil {
@@ -301,9 +301,8 @@ const entries = [
   .work-cap h3 { font-size: clamp(28px, 2.6vw, 38px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); }
   .more { display: inline-flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); font-size: 10px; }
 
-  .work:hover .work-media { transform: translateY(-4px); box-shadow: 0 32px 56px -28px rgb(0 0 0 / .5), 0 1px 3px rgb(0 0 0 / .06); }
-  .work:hover .zw { transform: scale(1.03); }
-  .work:hover .work-media::after { opacity: 1; }
+  .work:hover .work-media { transform: translateY(-3px); box-shadow: 0 32px 56px -28px rgb(0 0 0 / .5), 0 1px 3px rgb(0 0 0 / .06); }
+    .work:hover .work-media::after { opacity: 1; }
   .work:hover .more { opacity: 1; transform: none; }
   .works-grid:has(.work:hover) .work:not(:hover) .work-media { opacity: .55; filter: saturate(.7); }
 

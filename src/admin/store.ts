@@ -93,3 +93,24 @@ export function validate(c: Content): string[] {
   if (!c.settings.name.trim()) errs.push('Général : le nom est vide.');
   return errs;
 }
+
+export type PhotoGroup = { label: string; photos: Photo[] };
+
+/** Toutes les photos déjà présentes sur le site, rangées par provenance (sans doublons). */
+export function photoLibrary(c: Content): PhotoGroup[] {
+  const seen = new Set<string>();
+  const groups: PhotoGroup[] = [];
+  const push = (label: string, list: (Photo | null | undefined)[]) => {
+    const photos = list.filter((p): p is Photo => !!p && !seen.has(p.src));
+    photos.forEach((p) => seen.add(p.src));
+    if (photos.length) groups.push({ label, photos });
+  };
+  for (const g of c.galleries) push(`Galerie · ${g.title}`, g.photos);
+  for (const p of c.projects) {
+    push(`Projet · ${p.title} · couverture`, [p.cover]);
+    p.sections.forEach((s) => push(`Projet · ${p.title} · ${s.title}`, s.photos));
+  }
+  for (const cr of c.creations) cr.sections.forEach((s) => push(`Création · ${cr.title} · ${s.title}`, s.photos));
+  push('Accueil', [c.home.heroPhoto, c.home.worksBg, c.home.cards?.photo, c.home.cards?.video, c.home.cards?.creations]);
+  return groups;
+}

@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import type { Photo } from '../lib/types';
-import { useStore, youtubeId } from './store';
+import { useStore, youtubeId, photoLibrary } from './store';
 
 /* ---------- Champs ---------- */
 
@@ -185,11 +185,17 @@ export function ItemList<T>({ items, onChange, title, meta, thumb, render, creat
 
 /* ---------- Photos ---------- */
 
-type PhotosProps = { label?: string; photos: Photo[]; onChange: (p: Photo[]) => void; single?: boolean; hint?: string };
+/** aspect : format d'affichage sur le site (largeur / hauteur), utilisé par l'outil de recadrage. */
+type PhotosProps = { label?: string; photos: Photo[]; onChange: (p: Photo[]) => void; single?: boolean; hint?: string; aspect?: number };
 
 /** Glisser-déposer de photos, réordonnables par glisser, avec compression automatique. */
-export function PhotoManager({ label = 'Photos', photos, onChange, single, hint }: PhotosProps) {
+export function PhotoManager({ label = 'Photos', photos, onChange, single, hint, aspect }: PhotosProps) {
   const { addFiles, imgUrl } = useStore();
+  const [picking, setPicking] = useState(false);
+  const [cropping, setCropping] = useState(false);
+  // Recadrage : la photo unique (couverture/fond), ou la 1re d'une liste (couverture de la galerie)
+  const cropTarget = photos[0];
+  const cropAspect = aspect ?? (single ? 16 / 9 : 4 / 3);
   const [busy, setBusy] = useState<[number, number] | null>(null);
   const [over, setOver] = useState(false);
   const [drag, setDrag] = useState<number | null>(null);
@@ -227,8 +233,11 @@ export function PhotoManager({ label = 'Photos', photos, onChange, single, hint 
               onDragOver={(e) => e.preventDefault()}
               onDragEnd={() => setDrag(null)}
             >
-              <img src={imgUrl(p)} alt="" loading="lazy" />
+              <img src={imgUrl(p)} alt="" loading="lazy" style={i === 0 ? cropCss(p.crop) : undefined} />
               {i === 0 && !single && <span class="badge">Couverture</span>}
+              {i === 0 && (
+                <button type="button" class="crop-btn" title="Recadrer" onClick={() => setCropping(true)}>✂ Recadrer</button>
+              )}
               <button type="button" class="icon danger" title="Retirer" onClick={() => onChange(photos.filter((_, k) => k !== i))}>✕</button>
             </figure>
           ))}
@@ -246,6 +255,29 @@ export function PhotoManager({ label = 'Photos', photos, onChange, single, hint 
           : <span>{single ? (photos.length ? 'Remplacer la photo' : 'Ajouter une photo') : 'Glisse tes photos ici'} <u>ou parcourir</u></span>}
         <input ref={input} type="file" accept="image/*" multiple={!single} hidden onChange={(e) => { add(e.currentTarget.files); e.currentTarget.value = ''; }} />
       </div>
+      <button type="button" class="btn ghost small pick-btn" onClick={() => setPicking(true)}>▦ Choisir parmi les photos du site</button>
+      {cropping && cropTarget && (
+        <Cropper
+          photo={cropTarget}
+          aspect={cropAspect}
+          onClose={() => setCropping(false)}
+          onSave={(crop) => {
+            const next = photos.slice();
+            next[0] = { ...cropTarget, crop };
+            if (!crop) delete next[0].crop;
+            onChange(next);
+            setCropping(false);
+          }}
+        />
+      )}
+      {picking && (
+        <PhotoPicker
+          single={single}
+          exclude={photos}
+          onClose={() => setPicking(false)}
+          onPick={(picked) => { onChange(single ? picked.slice(0, 1) : [...photos, ...picked]); setPicking(false); }}
+        />
+      )}
       <span class="hint">
         {hint ?? (single ? '' : 'Glisse les vignettes pour changer l’ordre. La première sert de couverture. ')}
         Les photos sont compressées automatiquement (WebP, 2000 px max, sans données GPS).
@@ -277,6 +309,142 @@ export function SectionsEditor({ sections, onChange }: { sections: { title: stri
           </div>
         )}
       />
+    </div>
+  );
+}
+
+/** Fenêtre de choix parmi les photos déjà présentes sur le site (galeries, projets, créations…). */
+function PhotoPicker({ single, exclude, onPick, onClose }: { single?: boolean; exclude: Photo[]; onPick: (p: Photo[]) => void; onClose: () => void }) {
+  const { content, imgUrl } = useStore();
+  const groups = photoLibrary(content);
+  const [group, setGroup] = useState<string>('');
+  const [q, setQ] = useState('');
+  const [sel, setSel] = useState<Photo[]>([]);
+  const taken = new Set(exclude.map((p) => p.src));
+
+  const shown = groups.filter((g) => (!group || g.label === group) && g.label.toLowerCase().includes(q.trim().toLowerCase()));
+  const total = shown.reduce((n, g) => n + g.photos.length, 0);
+  const isSel = (p: Photo) => sel.some((x) => x.src === p.src);
+  const click = (p: Photo) => {
+    if (single) return onPick([p]);
+    setSel(isSel(p) ? sel.filter((x) => x.src !== p.src) : [...sel, p]);
+  };
+
+  return (
+    <div class="picker-overlay" onClick={(e) => e.target === e.currentTarget && onClose()} onKeyDown={(e) => e.key === 'Escape' && onClose()}>
+      <div class="picker" role="dialog" aria-label="Choisir une photo">
+        <header class="picker-head">
+          <div>
+            <h2>{single ? 'Choisir une photo' : 'Ajouter des photos du site'}</h2>
+            <p class="hint">{total} photo{total > 1 ? 's' : ''}{single ? ' · clique sur une photo pour la choisir' : ' · clique pour sélectionner'}</p>
+          </div>
+          <button type="button" class="icon" title="Fermer" onClick={onClose}>✕</button>
+        </header>
+        <div class="picker-filters">
+          <input type="search" placeholder="Rechercher une galerie, un projet…" value={q} onInput={(e) => setQ(e.currentTarget.value)} autoFocus />
+          <select value={group} onChange={(e) => setGroup(e.currentTarget.value)}>
+            <option value="">Toutes les provenances</option>
+            {groups.map((g) => <option value={g.label}>{g.label} ({g.photos.length})</option>)}
+          </select>
+        </div>
+        <div class="picker-body">
+          {shown.map((g) => (
+            <section>
+              <h3>{g.label} <em>{g.photos.length}</em></h3>
+              <div class="picker-grid">
+                {g.photos.map((p) => (
+                  <button type="button" class={`pick${isSel(p) ? ' on' : ''}${taken.has(p.src) ? ' taken' : ''}`} onClick={() => click(p)} title={taken.has(p.src) ? 'Déjà utilisée ici' : ''}>
+                    <img src={imgUrl(p)} alt="" loading="lazy" />
+                    {isSel(p) && <span class="check">✓</span>}
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
+          {!shown.length && <p class="hint">Aucune photo ne correspond.</p>}
+        </div>
+        {!single && (
+          <footer class="picker-foot">
+            <button type="button" class="btn ghost" onClick={onClose}>Annuler</button>
+            <button type="button" class="btn primary" disabled={!sel.length} onClick={() => onPick(sel)}>Ajouter {sel.length || ''} photo{sel.length > 1 ? 's' : ''}</button>
+          </footer>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Recadrage ---------- */
+
+type CropValue = { x: number; y: number; zoom: number };
+
+/** Même rendu que sur le site (cropStyle dans lib/media.ts). */
+export const cropCss = (c?: CropValue) =>
+  c ? { objectPosition: `${c.x}% ${c.y}%`, transformOrigin: `${c.x}% ${c.y}%`, scale: String(c.zoom) } : undefined;
+
+/** Recadrage non destructif : on choisit la zone visible (glisser) et le zoom ; l'original n'est pas modifié. */
+function Cropper({ photo, aspect, onSave, onClose }: { photo: Photo; aspect: number; onSave: (c: CropValue | undefined) => void; onClose: () => void }) {
+  const { imgUrl } = useStore();
+  const [c, setC] = useState<CropValue>(photo.crop ?? { x: 50, y: 50, zoom: 1 });
+  const frame = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ px: number; py: number; x: number; y: number } | null>(null);
+  const clamp = (v: number) => Math.min(100, Math.max(0, v));
+
+  const down = (e: PointerEvent) => {
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch {}
+    drag.current = { px: e.clientX, py: e.clientY, x: c.x, y: c.y };
+  };
+  const move = (e: PointerEvent) => {
+    const d = drag.current, f = frame.current;
+    if (!d || !f) return;
+    const r = f.getBoundingClientRect();
+    // glisser l'image vers la droite montre davantage sa partie gauche
+    const k = 1.6 / c.zoom;
+    setC({ ...c, x: clamp(d.x - ((e.clientX - d.px) / r.width) * 100 * k), y: clamp(d.y - ((e.clientY - d.py) / r.height) * 100 * k) });
+  };
+  const up = () => (drag.current = null);
+
+  return (
+    <div class="picker-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div class="picker cropper" role="dialog" aria-label="Recadrer la photo">
+        <header class="picker-head">
+          <div>
+            <h2>Recadrer</h2>
+            <p class="hint">Fais glisser l'image pour choisir ce qui est visible, puis règle le zoom. La photo d'origine n'est pas modifiée.</p>
+          </div>
+          <button type="button" class="icon" title="Fermer" onClick={onClose}>✕</button>
+        </header>
+        <div class="crop-stage">
+          <div
+            ref={frame}
+            class="crop-frame"
+            style={{ aspectRatio: String(aspect) }}
+            onPointerDown={down as any}
+            onPointerMove={move as any}
+            onPointerUp={up}
+            onPointerCancel={up}
+          >
+            <img src={imgUrl(photo, false)} alt="" draggable={false} style={cropCss(c)} />
+            <span class="crop-grid" aria-hidden="true" />
+          </div>
+        </div>
+        <footer class="picker-foot crop-foot">
+          <label class="crop-zoom">
+            <span>Zoom</span>
+            <input type="range" min="1" max="3" step="0.01" value={c.zoom} onInput={(e) => setC({ ...c, zoom: Number(e.currentTarget.value) })} />
+            <b>{Math.round(c.zoom * 100)} %</b>
+          </label>
+          <button type="button" class="btn ghost" onClick={() => setC({ x: 50, y: 50, zoom: 1 })}>Réinitialiser</button>
+          <button type="button" class="btn ghost" onClick={onClose}>Annuler</button>
+          <button
+            type="button"
+            class="btn primary"
+            onClick={() => onSave(c.x === 50 && c.y === 50 && c.zoom === 1 ? undefined : { x: Math.round(c.x * 10) / 10, y: Math.round(c.y * 10) / 10, zoom: Math.round(c.zoom * 100) / 100 })}
+          >
+            Valider le cadrage
+          </button>
+        </footer>
+      </div>
     </div>
   );
 }

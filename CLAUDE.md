@@ -72,6 +72,8 @@ Pas de serveur : l'admin lit et écrit le repo via l'API GitHub, depuis le navig
 - **Auth** : jeton GitHub *fine-grained* de Quentin (repo `portfolio`, Contents RW + Actions R). `verify()` exige `login === Nicknamezotb` et `permissions.push`. Jeton stocké en localStorage/sessionStorage (`qg-admin-token`). Ne jamais saisir de jeton réel à sa place : c'est lui qui le crée et le colle.
 - **Publication** (`publish()` dans github.ts) : **un seul commit** via l'API Git Data (blobs → tree → commit → PATCH ref) contenant content.json + photos ajoutées + suppressions. Refus si le sha de content.json a changé depuis le chargement (conflit).
 - **Photos** : `images.ts` compresse dans le navigateur (OffscreenCanvas → WebP, 2000 px q0.82 + vignette 720 px q0.75, métadonnées/GPS supprimées). Les fichiers restent en attente dans `store.pending` jusqu'à la publication. Suppressions et ajouts sont **calculés au moment de publier** en comparant `photoPaths(original)` et `photoPaths(contenu)` : rien à gérer à chaque action.
+- **Bibliothèque** : chaque champ photo a « Choisir parmi les photos du site » (`PhotoPicker`, `photoLibrary()` dans store.ts).
+- **Recadrage** non destructif (`Cropper` dans ui.tsx) : `photo.crop = { x, y, zoom }` sur la photo unique ou la 1re d'une liste (couverture). Rendu site via `cropStyle()` (media.ts) : object-position + propriété CSS `scale` (compatible avec les transform de parallaxe). Prop `aspect` de PhotoManager = format réel sur le site.
 - Aperçu des photos déjà publiées dans l'admin : raw.githubusercontent.com (pas le site déployé, qui peut être en retard).
 - Après publication : on interroge `actions/runs?head_sha=` toutes les 5 s pour afficher « En ligne ✓ ».
 - Fichiers : `Admin.tsx` (connexion, éditeur, barre Publier), `panels.tsx` (Général, Accueil, Vidéos, Galeries, Créations, Projets), `ui.tsx` (Field, Area, Toggle, ColorField, SlugField, YouTubeField, ItemList repliable/réordonnable, PhotoManager glisser-déposer, SectionsEditor), `store.ts` (contexte, slugify, youtubeId, validate), `admin.css`.
@@ -100,5 +102,5 @@ Pas de serveur : l'admin lit et écrit le repo via l'API GitHub, depuis le navig
 - Photos importées de l'ancien site Adobe le 2026-10-20 (≈520, IDs `a-<uuid>` dans public/media, ~189 Mo). Photo d'accueil = une photo du Pérou choisie par défaut.
 - BAIANA : année « 2025-2026 » (confirmé par Quentin).
 - Quentin ne veut **pas** de collaborateur (Martin) : projet perso, repo réservé à lui.
-- Préférences de Quentin : pas de jaune ; rendu moderne, épuré, typographie pas trop grosse ; thème clair ; tout doit être modifiable depuis l'admin ; il veut être le seul administrateur.
+- Préférences de Quentin : **pas de zoom sur les images** (ni survol ni défilement : seulement fondus et parallaxe légère) ; pas de jaune ; rendu moderne, épuré, typographie pas trop grosse ; thème clair ; tout doit être modifiable depuis l'admin ; il veut être le seul administrateur.
 - Bouton Publier de l'admin testé et fonctionnel par Quentin (2026-10).

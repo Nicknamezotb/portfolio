@@ -1,5 +1,6 @@
 import type { Content } from '../lib/types';
 import { useStore, slugify } from './store';
+import { cropCss } from './ui';
 import { Panel, Card, Field, Area, Toggle, ColorField, SlugField, YouTubeField, ItemList, PhotoManager, SectionsEditor } from './ui';
 
 const THEMES = {
@@ -102,7 +103,7 @@ function HeroPreview() {
   const bg = h.heroPhoto ? imgUrl(h.heroPhoto, false) : 'https://picsum.photos/seed/hero-cover/1200/800';
   return (
     <div class={`hero-preview side-${h.heroSide}`} style={{ '--bg': t.bg, '--text': t.text, '--accent': t.accent, '--veil': `${h.heroOpacity}%` } as any}>
-      <img src={bg} alt="" />
+      <img src={bg} alt="" style={cropCss(h.heroPhoto?.crop)} />
       <div class="hp-veil" />
       <div class="hp-text">
         <span class="hp-kicker">{c.settings.role}</span>
@@ -128,6 +129,7 @@ export function Home() {
         <PhotoManager
           label="Photo plein écran"
           single
+          aspect={16 / 9}
           photos={h.heroPhoto ? [h.heroPhoto] : []}
           onChange={(p) => set((d) => (d.home.heroPhoto = p[0] ?? null))}
           hint="Occupe tout l'écran. Choisis une photo horizontale dont le sujet est du côté opposé au texte. "
@@ -156,6 +158,7 @@ export function Home() {
           <PhotoManager
             label="Photo de fond de la section « Travaux »"
             single
+            aspect={2.4}
             photos={h.worksBg ? [h.worksBg] : []}
             onChange={(p) => set((d) => (d.home.worksBg = p[0] ?? null))}
             hint="Affichée floutée et estompée derrière les trois cartes, pour casser le fond uni. Sans photo, le fond reste uni. "
@@ -166,6 +169,7 @@ export function Home() {
             <PhotoManager
               label={CARD_LABELS[k][0]}
               single
+              aspect={4 / 5}
               photos={h.cards[k] ? [h.cards[k]!] : []}
               onChange={(p) => set((d) => (d.home.cards[k] = p[0] ?? null))}
               hint={`${CARD_LABELS[k][1]} Format vertical conseillé. `}
@@ -337,6 +341,7 @@ export function Projects() {
             <PhotoManager
               label="Image de couverture (pour l'accueil)"
               single
+              aspect={2.3}
               photos={p.cover ? [p.cover] : []}
               onChange={(ph) => up((y) => (y.cover = ph[0] ?? null))}
               hint="Optionnelle : sinon la miniature de la vidéo est utilisée. "

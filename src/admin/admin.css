@@ -225,3 +225,60 @@ input[type=range] { width: 100%; accent-color: var(--a-accent); }
 .hp-tag { font-size: 1.6cqw; line-height: 1.5; }
 .hp-cap { position: absolute; right: 4cqw; bottom: 3cqw; font: 1.3cqw ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 6px rgb(0 0 0 / .5); }
 .side-right .hp-cap { right: auto; left: 4cqw; }
+
+/* ---------- Choix parmi les photos du site ---------- */
+.pick-btn { justify-self: start; margin-top: 2px; }
+.picker-overlay { position: fixed; inset: 0; z-index: 100; background: rgb(20 21 26 / .45); backdrop-filter: blur(4px); display: grid; place-items: center; padding: 24px; animation: pkIn .2s ease; }
+@keyframes pkIn { from { opacity: 0; } }
+.picker { width: min(1040px, 100%); height: min(86vh, 900px); background: var(--a-surface); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgb(0 0 0 / .25); }
+.picker-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 18px 20px 10px; }
+.picker-head h2 { margin: 0; font-size: 18px; }
+.picker-head .hint { margin: 2px 0 0; }
+.picker-filters { display: flex; gap: 8px; padding: 0 20px 14px; border-bottom: 1px solid var(--a-line); }
+.picker-filters input, .picker-filters select { border: 1px solid var(--a-line-strong); border-radius: 8px; padding: 8px 10px; background: #fff; }
+.picker-filters input { flex: 1; min-width: 0; }
+.picker-filters select { max-width: 45%; }
+.picker-body { flex: 1; overflow-y: auto; padding: 16px 20px 24px; }
+.picker-body section + section { margin-top: 22px; }
+.picker-body h3 { margin: 0 0 10px; font-size: 13px; }
+.picker-body h3 em { font-style: normal; color: var(--a-muted); font-weight: 500; margin-left: 4px; }
+.picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; }
+.pick { position: relative; aspect-ratio: 1; padding: 0; border: 0; border-radius: 6px; overflow: hidden; background: #eceae5; cursor: pointer; outline: 2px solid transparent; outline-offset: -2px; transition: outline-color .15s, opacity .15s; }
+.pick img { width: 100%; height: 100%; object-fit: cover; }
+.pick:hover { outline-color: var(--a-accent); }
+.pick.on { outline: 3px solid var(--a-accent); }
+.pick.taken { opacity: .4; }
+.check { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--a-accent); color: #fff; display: grid; place-items: center; font-size: 12px; }
+.picker-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--a-line); }
+@media (max-width: 640px) {
+  .picker-overlay { padding: 0; }
+  .picker { height: 100%; border-radius: 0; }
+  .picker-filters { flex-direction: column; }
+  .picker-filters select { max-width: none; }
+  .picker-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
+}
+
+/* ---------- Recadrage ---------- */
+.crop-btn {
+  position: absolute; left: 4px; top: 4px; border: 0; border-radius: 4px; padding: 3px 7px;
+  background: rgb(255 255 255 / .92); font-size: 11px; font-weight: 500; opacity: 0; transition: opacity .15s;
+}
+.photo-grid figure:hover .crop-btn, .photo-grid.single .crop-btn { opacity: 1; }
+.cropper { height: auto; max-height: 92vh; }
+.crop-stage { padding: 8px 20px 16px; display: grid; place-items: center; background: #f1f0ec; flex: 1; min-height: 0; }
+.crop-frame {
+  position: relative; width: 100%; max-height: 62vh; max-width: calc(62vh * 2.4); overflow: hidden; border-radius: 6px;
+  cursor: grab; touch-action: none; user-select: none; background: #ddd; box-shadow: 0 8px 30px rgb(0 0 0 / .18);
+}
+.crop-frame:active { cursor: grabbing; }
+.crop-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.crop-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to right, transparent 33.2%, rgb(255 255 255 / .5) 33.3%, transparent 33.4%, transparent 66.6%, rgb(255 255 255 / .5) 66.7%, transparent 66.8%),
+    linear-gradient(to bottom, transparent 33.2%, rgb(255 255 255 / .5) 33.3%, transparent 33.4%, transparent 66.6%, rgb(255 255 255 / .5) 66.7%, transparent 66.8%);
+}
+.crop-foot { align-items: center; flex-wrap: wrap; }
+.crop-zoom { display: flex; align-items: center; gap: 10px; margin-right: auto; font-size: 13px; min-width: 220px; flex: 1; }
+.crop-zoom input { flex: 1; }
+.crop-zoom b { font-weight: 500; color: var(--a-muted); width: 44px; text-align: right; }

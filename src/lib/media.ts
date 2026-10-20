@@ -48,3 +48,10 @@ export const single = (p: Photo | null) => (p ? resolve(p) : null);
 
 // maxresdefault : 16/9 sans bandes noires (hqdefault est en 4/3 avec bandes)
 export const ytThumb = (id: string) => `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+
+/** Style CSS du cadrage choisi dans l'admin (pour les images en object-fit: cover). Utilise la propriété scale, compatible avec les transform de parallaxe. */
+export function cropStyle(p?: { crop?: { x: number; y: number; zoom: number } } | null) {
+  const c = p?.crop;
+  if (!c) return undefined;
+  return `object-position:${c.x}% ${c.y}%;transform-origin:${c.x}% ${c.y}%;scale:${c.zoom}`;
+}
