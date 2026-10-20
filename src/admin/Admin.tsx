@@ -95,6 +95,7 @@ function Editor({ token, user, onLogout }: { token: string; user: User; onLogout
       .then(({ data, sha }) => {
         // Valeurs par défaut pour les champs ajoutés après coup
         data.home = { heroCaption: '', heroSide: 'left', heroOpacity: 55, worksBg: null, ...data.home };
+        data.pageBgs = { photo: null, video: null, creations: null, ...data.pageBgs };
         data.galleries = data.galleries.map((g) => ({ description: '', ...g }));
         data.home.cards = { photo: null, video: null, creations: null, ...data.home.cards };
         setContent(data); setOriginal(structuredClone(data)); setSha(sha); setDirty(false); })

@@ -1,9 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { content, url, cover, cropStyle } from '../../lib/media';
+import Tile from '../../components/Tile.astro';
+import Backdrop from '../../components/Backdrop.astro';
+import { content, url, cover, single } from '../../lib/media';
 const { galleries } = content;
+const bg = single(content.pageBgs?.photo ?? null);
 ---
 <Base title="Photo" description="Galeries photo : événements, concerts, conférences et voyages.">
+  <Backdrop photo={bg} />
   <div class="wrap">
     <header class="page-head">
       <span class="mono">Galeries · {galleries.length}</span>
@@ -11,30 +15,22 @@ const { galleries } = content;
     </header>
 
     <div class="cards">
-      {galleries.map((g, i) => {
-        const c = cover(g.photos, g.slug);
-        return (
-          <a href={url(`/photo/${g.slug}`)} class="card reveal" style={"--i:" + (i % 3)}>
-            <div class="img-frame">{c && <img src={c.thumb} style={cropStyle(c)} alt="" loading="lazy" />}</div>
-            <div class="meta">
-              <h2 class="display">{g.title}</h2>
-              <span class="mono">{[g.place, g.year].filter(Boolean).join(' · ')}</span>
-            </div>
-          </a>
-        );
-      })}
+      {galleries.map((g, i) => (
+        <Tile
+          href={url(`/photo/${g.slug}`)}
+          img={cover(g.photos, g.slug)}
+          title={g.title}
+          meta={[g.place, g.year, `${g.photos.length} photos`].filter(Boolean).join(' · ')}
+          aspect="4 / 5"
+          i={i}
+        />
+      ))}
     </div>
   </div>
 </Base>
 
 <style>
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 48px) clamp(12px, 2vw, 24px); }
-  .img-frame { aspect-ratio: 4 / 3; }
-  .card img { transition: opacity .7s var(--ease-out); }
-  .card:hover img { opacity: .88; }
-  .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; }
-  .meta h2 { font-size: clamp(24px, 2.2vw, 30px); transition: color .3s; }
-  .card:hover h2 { color: var(--accent); }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.4vw, 32px); }
   @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 </style>

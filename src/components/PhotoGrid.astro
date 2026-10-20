@@ -15,7 +15,7 @@ const { photos, label = '', columns = 3 } = Astro.props;
 
 <style>
   .grid { columns: var(--cols); column-gap: clamp(8px, 1vw, 14px); }
-  .tile { display: block; break-inside: avoid; margin-bottom: clamp(8px, 1vw, 14px); background: var(--raised); overflow: hidden; cursor: zoom-in; }
+  .tile { display: block; break-inside: avoid; margin-bottom: clamp(8px, 1vw, 14px); background: var(--raised); overflow: hidden; cursor: zoom-in; border-radius: 4px; }
   .tile img { width: 100%; transition: opacity .6s var(--ease-out); }
   .grid:hover .tile img { opacity: .82; }
   .grid .tile:hover img { opacity: 1; }

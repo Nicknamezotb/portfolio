@@ -1,0 +1,56 @@
+---
+// Carte cliquable au même style que les cartes « Travaux » de l'accueil :
+// coins arrondis, ombre douce, texte posé sur la photo, survol qui soulève la carte (sans zoom).
+import { cropStyle } from '../lib/media';
+
+interface Props {
+  href: string;
+  img?: { src?: string; thumb?: string; crop?: { x: number; y: number; zoom: number } } | null;
+  title: string;
+  meta?: string;
+  sub?: string;
+  aspect?: string;  // ex. '4 / 5', '4 / 3', '1'
+  i?: number;       // rang, pour l'apparition en cascade
+  large?: boolean;  // image pleine taille plutôt que la vignette
+}
+const { href, img, title, meta, sub, aspect = '4 / 5', i = 0, large = false } = Astro.props;
+const src = img ? (large ? img.src ?? img.thumb : img.thumb ?? img.src) : undefined;
+---
+<a href={href} class="tile reveal" style={`--i:${i % 3}`}>
+  <div class="media" style={`aspect-ratio:${aspect}`}>
+    {src && <img src={src} style={cropStyle(img as any)} alt="" loading="lazy" />}
+    <div class="cap">
+      {meta && <span class="mono">{meta}</span>}
+      <h2 class="display">{title}</h2>
+      {sub && <p class="sub">{sub}</p>}
+      <span class="mono more">Découvrir <span>→</span></span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .tile { display: block; position: relative; }
+  .media {
+    position: relative; overflow: hidden; border-radius: 6px; background: #1c1d22; /* sombre : les logos blancs ou transparents restent visibles */
+    box-shadow: 0 24px 48px -28px rgb(0 0 0 / .4), 0 1px 3px rgb(0 0 0 / .05);
+    transition: box-shadow .9s var(--ease-out), transform .9s var(--ease-out);
+  }
+  .media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .media::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgb(10 11 14 / .6) 0%, rgb(10 11 14 / .14) 42%, transparent 66%);
+    opacity: .9; transition: opacity .9s var(--ease-out);
+  }
+  .cap { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px; color: #fff; display: grid; gap: 4px; }
+  .cap .mono { color: rgb(255 255 255 / .8); font-size: 10px; }
+  .cap h2 { font-size: clamp(26px, 2.4vw, 36px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); transition: transform .8s var(--ease-out); }
+  .sub { margin: 0; font-size: 13px; line-height: 1.45; color: rgb(255 255 255 / .82); max-width: 40ch; }
+  .more { display: inline-flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+
+  /* Survol : seule la carte visée réagit */
+  .tile:hover .media { transform: translateY(-8px); box-shadow: 0 40px 70px -30px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .06); }
+  .tile:hover .media::after { opacity: 1; }
+  .tile:hover h2 { transform: translateY(-4px); }
+  .tile:hover .more { opacity: 1; transform: none; }
+  @media (hover: none) { .more { opacity: 1; transform: none; } }
+</style>

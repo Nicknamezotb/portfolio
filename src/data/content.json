@@ -3950,5 +3950,28 @@
       "moreLabel": "Plus de photos du Pérou",
       "moreLink": "/photo/perou"
     }
-  ]
+  ],
+  "pageBgs": {
+    "photo": {
+      "src": "/media/a-c16de481e5ce.webp",
+      "thumb": "/media/a-c16de481e5ce-sm.webp",
+      "w": 2000,
+      "h": 1333,
+      "alt": ""
+    },
+    "video": {
+      "src": "/media/a-8b0e9833b30f.webp",
+      "thumb": "/media/a-8b0e9833b30f-sm.webp",
+      "w": 2000,
+      "h": 1333,
+      "alt": ""
+    },
+    "creations": {
+      "src": "/media/creations-cover.webp",
+      "thumb": "/media/creations-cover-sm.webp",
+      "w": 1600,
+      "h": 2000,
+      "alt": ""
+    }
+  }
 }

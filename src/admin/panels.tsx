@@ -190,12 +190,32 @@ export function Home() {
   );
 }
 
+/* ---------- Photo de fond floutée des pages Photo / Vidéo / Créations ---------- */
+
+function PageBg({ k, label }: { k: 'photo' | 'video' | 'creations'; label: string }) {
+  const { content: c, set } = useStore();
+  const p = c.pageBgs?.[k] ?? null;
+  return (
+    <Card title={`Fond de la page « ${label} »`}>
+      <PhotoManager
+        label="Photo floutée en haut de la page"
+        single
+        aspect={16 / 9}
+        photos={p ? [p] : []}
+        onChange={(ph) => set((d) => { d.pageBgs = { photo: null, video: null, creations: null, ...d.pageBgs, [k]: ph[0] ?? null }; })}
+        hint="Affichée très floutée et estompée derrière le titre de la page, pour casser le fond uni. Sans photo, le fond reste uni. "
+      />
+    </Card>
+  );
+}
+
 /* ---------- Vidéos ---------- */
 
 export function Videos() {
   const { content: c, set } = useStore();
   return (
     <Panel title="Vidéos" intro="Tes vidéos YouTube, rangées par catégorie. L'ordre ici est l'ordre sur le site.">
+      <PageBg k="video" label="Vidéo" />
       <ItemList
         items={c.videos}
         onChange={(v) => set((d) => (d.videos = v))}
@@ -243,6 +263,7 @@ export function Galleries() {
   const { content: c, set, imgUrl } = useStore();
   return (
     <Panel title="Galeries photo" intro="Chaque galerie a sa propre page. La première photo sert de couverture.">
+      <PageBg k="photo" label="Photo" />
       <ItemList
         items={c.galleries}
         onChange={(v) => set((d) => (d.galleries = v))}
@@ -275,6 +296,7 @@ export function Creations() {
   const { content: c, set, imgUrl } = useStore();
   return (
     <Panel title="Créations visuelles" intro="Logos, chartes graphiques, visuels… Une page par projet.">
+      <PageBg k="creations" label="Créations" />
       <ItemList
         items={c.creations}
         onChange={(v) => set((d) => (d.creations = v))}

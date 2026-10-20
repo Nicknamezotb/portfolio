@@ -1,9 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { content, url, cover, cropStyle } from '../../lib/media';
+import Tile from '../../components/Tile.astro';
+import Backdrop from '../../components/Backdrop.astro';
+import { content, url, cover, single } from '../../lib/media';
 const { creations } = content;
+const bg = single(content.pageBgs?.creations ?? null);
 ---
 <Base title="Créations visuelles" description="Identités visuelles réalisées pour la vie associative de l'ISEP.">
+  <Backdrop photo={bg} />
   <div class="wrap">
     <header class="page-head">
       <span class="mono">Identités visuelles · {creations.length}</span>
@@ -11,34 +15,23 @@ const { creations } = content;
     </header>
 
     <div class="cards">
-      {creations.map((c, i) => {
-        const img = cover(c.sections.flatMap((s) => s.photos), c.slug);
-        return (
-          <a href={url(`/creations/${c.slug}`)} class="card reveal" style={"--i:" + (i % 3)}>
-            <div class="img-frame">{img && <img src={img.thumb} style={cropStyle(img)} alt="" loading="lazy" />}</div>
-            <div class="meta">
-              <h2 class="display">{c.title}</h2>
-              <span class="mono">{c.year}</span>
-            </div>
-            <p class="org">{c.org}</p>
-            <p class="work">{c.work}</p>
-          </a>
-        );
-      })}
+      {creations.map((c, i) => (
+        <Tile
+          href={url(`/creations/${c.slug}`)}
+          img={cover(c.sections.flatMap((s) => s.photos), c.slug)}
+          title={c.title}
+          meta={[c.org, c.year].filter(Boolean).join(' · ')}
+          sub={c.work}
+          aspect="4 / 5"
+          i={i}
+        />
+      ))}
     </div>
   </div>
 </Base>
 
 <style>
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(28px, 4vw, 48px) clamp(12px, 2vw, 24px); }
-  .img-frame { aspect-ratio: 1; }
-  .card img { transition: opacity .7s var(--ease-out); }
-  .card:hover img { opacity: .88; }
-  .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; }
-  .meta h2 { font-size: clamp(26px, 2.4vw, 34px); transition: color .3s; }
-  .card:hover h2 { color: var(--accent); }
-  .org { margin: 4px 0 2px; font-size: 14px; }
-  .work { margin: 0; font-size: 14px; color: var(--muted); }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.4vw, 32px); }
   @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 </style>

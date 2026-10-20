@@ -1,0 +1,29 @@
+---
+// Photo floutée et estompée en fond du haut de page (même effet que derrière « Travaux » sur l'accueil).
+// Elle se fond dans la couleur de la page vers le bas : aucune coupure nette.
+import { cropStyle } from '../lib/media';
+
+interface Props { photo?: { src?: string; thumb?: string; crop?: { x: number; y: number; zoom: number } } | null }
+const { photo } = Astro.props;
+const src = photo?.src ?? photo?.thumb;
+---
+{src && (
+  <div class="backdrop" aria-hidden="true">
+    <img src={src} style={cropStyle(photo as any)} alt="" fetchpriority="low" />
+  </div>
+)}
+
+<style>
+  .backdrop {
+    position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: min(1100px, 115vh);
+    overflow: hidden; pointer-events: none;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 100%);
+    animation: bdIn 1.6s var(--ease-out) both;
+  }
+  .backdrop img {
+    position: absolute; left: -6%; top: -8%; width: 112%; height: 116%; max-width: none; object-fit: cover;
+    filter: blur(34px) saturate(1.2); opacity: .42;
+  }
+  @keyframes bdIn { from { opacity: 0; } }
+</style>

@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Backdrop from '../../components/Backdrop.astro';
 import PhotoGrid from '../../components/PhotoGrid.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
-import { content, url, photos } from '../../lib/media';
+import { content, url, photos, cover } from '../../lib/media';
 
 export function getStaticPaths() {
   const { creations } = content;
@@ -12,8 +13,10 @@ export function getStaticPaths() {
   }));
 }
 const { c, next } = Astro.props;
+const backdrop = cover(c.sections.flatMap((s) => s.photos), c.slug);
 ---
 <Base title={c.title} description={`${c.title}, ${c.org} ${c.year} : ${c.work}.`}>
+  <Backdrop photo={backdrop} />
   <div class="wrap">
     <header class="page-head">
       <a href={url('/creations')} class="mono back">← Créations</a>

@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Backdrop from '../../components/Backdrop.astro';
 import PhotoGrid from '../../components/PhotoGrid.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
-import { content, url, photos } from '../../lib/media';
+import { content, url, photos, cover } from '../../lib/media';
 
 export function getStaticPaths() {
   return content.projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
@@ -10,8 +11,10 @@ export function getStaticPaths() {
 const { p } = Astro.props;
 const paragraphs = p.intro.split(/\n\s*\n/).filter(Boolean);
 const meta = [p.kicker, p.place, p.date].filter(Boolean).join(' · ');
+const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((s) => s.photos), p.slug);
 ---
 <Base title={p.title} description={paragraphs[0]?.slice(0, 160)}>
+  <Backdrop photo={backdrop} />
   <div class="wrap">
     <header class="page-head">
       {meta && <span class="mono">{meta}</span>}
