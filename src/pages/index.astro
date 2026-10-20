@@ -63,10 +63,10 @@ const entries = [
       <h2 class="display reveal" style="--i:1">Travaux</h2>
     </header>
 
-    <!-- Composition décalée : chaque carte défile à sa propre vitesse (data-par) -->
+    <!-- Trois cartes alignées -->
     <div class="works-grid">
       {entries.map((e, i) => (
-        <a href={url(e.href)} class={`work work-${i + 1}`} data-par={[0.02, -0.025, 0.035][i]} data-fade>
+        <a href={url(e.href)} class={`work work-${i + 1}`} data-fade>
           <div class="work-media">
             <div class="zw">{e.pic && <img data-zoom src={e.pic.src} style={cropStyle(e.pic as any)} alt="" loading="lazy" />}</div>
             <div class="work-cap">
@@ -276,8 +276,6 @@ const entries = [
 
   .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2vw, 28px); max-width: 1120px; }
   .work { position: relative; display: block; opacity: 0; will-change: transform, opacity; }
-  .work-2 { margin-top: clamp(28px, 6vh, 64px); }
-  .work-3 { margin-top: clamp(10px, 2vh, 24px); }
   .work-media { aspect-ratio: 4 / 5; }
 
   .work-media {
@@ -337,7 +335,6 @@ const entries = [
     .works-grid { grid-template-columns: 1fr 1fr; }
     .work-3 { grid-column: span 2; margin-top: 0; }
     .work-3 .work-media { aspect-ratio: 16 / 9; }
-    .work-2 { margin-top: 32px; }
     .more { opacity: 1; transform: none; }
   }}
   @media (max-width: 640px) {
