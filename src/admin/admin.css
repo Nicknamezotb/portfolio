@@ -1,5 +1,6 @@
 @import '@fontsource-variable/inter';
 @import '@fontsource/bebas-neue/400.css';
+@import '@fontsource-variable/dm-sans';
 
 :root {
   --a-bg: #f6f6f4;
@@ -219,11 +220,11 @@ input[type=range] { width: 100%; accent-color: var(--a-accent); }
 }
 .hp-text { position: absolute; left: 5cqw; bottom: 9cqw; width: 38cqw; display: grid; gap: 1.6cqw; color: var(--text); }
 .side-right .hp-text { left: auto; right: 5cqw; text-align: right; }
-.hp-kicker { font: 1.4cqw/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+.hp-kicker { font: 1.4cqw/1 'DM Sans Variable', system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
 .hp-name { font: 9cqw/.86 'Bebas Neue', sans-serif; }
 .hp-name i { font-style: normal; opacity: .55; }
 .hp-tag { font-size: 1.6cqw; line-height: 1.5; }
-.hp-cap { position: absolute; right: 4cqw; bottom: 3cqw; font: 1.3cqw ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 6px rgb(0 0 0 / .5); }
+.hp-cap { position: absolute; right: 4cqw; bottom: 3cqw; font: 1.3cqw 'DM Sans Variable', system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 6px rgb(0 0 0 / .5); }
 .side-right .hp-cap { right: auto; left: 4cqw; }
 
 /* ---------- Choix parmi les photos du site ---------- */

@@ -1,6 +1,6 @@
 @import '@fontsource/bebas-neue/400.css';
 @import '@fontsource-variable/inter';
-@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource-variable/dm-sans';
 
 /* --bg, --text et --accent viennent des réglages du back-office (Base.astro).
    Toutes les autres teintes en sont dérivées : n'importe quel thème reste cohérent. */
@@ -15,7 +15,8 @@
 
   --font-display: 'Bebas Neue', 'Arial Narrow', sans-serif;
   --font-body: 'Inter Variable', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* petits textes (infos, menu, légendes) : police arrondie et simple */
+  --font-mono: 'DM Sans Variable', system-ui, sans-serif;
 
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1320px;
@@ -52,8 +53,9 @@ button { font: inherit; color: inherit; }
 }
 .mono {
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: .08em;
+  font-size: 12px;
+  letter-spacing: .06em;
+  font-weight: 500;
   text-transform: uppercase;
   color: var(--muted);
 }

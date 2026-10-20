@@ -21,13 +21,13 @@ function build() {
     .lb img { max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity .25s; }
     .lb img.loading { opacity: .2; }
     .lb-btn { position: absolute; background: none; border: 0; cursor: pointer; color: #9a9da5;
-              font: 400 22px/1 'JetBrains Mono', monospace; padding: 16px; transition: color .2s; }
+              font: 400 22px/1 'DM Sans Variable', system-ui, sans-serif; padding: 16px; transition: color .2s; }
     .lb-btn:hover { color: #6e9fc1; }
     .lb-close { top: 8px; right: 8px; font-size: 18px; }
     .lb-prev { left: 4px; top: 50%; transform: translateY(-50%); }
     .lb-next { right: 4px; top: 50%; transform: translateY(-50%); }
     .lb-count { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
-                font: 12px 'JetBrains Mono', monospace; letter-spacing: .1em; color: #7c7f87; }
+                font: 12px 'DM Sans Variable', system-ui, sans-serif; letter-spacing: .1em; color: #7c7f87; }
     @media (max-width: 720px) { .lb-prev, .lb-next { top: auto; bottom: 4px; transform: none; } }`;
   document.head.append(style);
   document.body.append(dlg);
