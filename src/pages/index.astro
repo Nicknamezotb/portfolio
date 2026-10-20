@@ -136,11 +136,11 @@ const entries = [
         const p = clamp(Math.max(0, scrollY) / (vh * 0.7));
         heroText.style.opacity = String(1 - p);
         heroText.style.transform = p ? `translate3d(0, ${p * -40}px, 0)` : '';
-        heroText.style.filter = p > 0.01 ? `blur(${p * 4}px)` : '';
+        heroText.style.filter = ''; // fondu sans flou
         if (heroBg) {
           heroBg.style.transform = p ? `translate3d(0, ${p * vh * 0.1}px, 0)` : '';
           // la photo s'estompe doucement en descendant, pour enchaîner sans rupture sur la suite
-          heroBg.style.opacity = p ? String(1 - p * 0.55) : '';
+          heroBg.style.opacity = ''; // la photo garde son éclat : pas de voile blanc en descendant
         }
       }
 
@@ -202,12 +202,10 @@ const entries = [
 
   /* Transition longue et douce vers le reste de la page : la photo se fond progressivement dans la couleur du fond */
   .hero:not(.bare)::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 48%; z-index: 1; pointer-events: none;
+    content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 18%; z-index: 1; pointer-events: none;
     background: linear-gradient(to bottom,
       transparent 0%,
-      color-mix(in srgb, var(--bg) 18%, transparent) 30%,
-      color-mix(in srgb, var(--bg) 52%, transparent) 58%,
-      color-mix(in srgb, var(--bg) 86%, transparent) 82%,
+      color-mix(in srgb, var(--bg) 40%, transparent) 55%,
       var(--bg) 100%);
   }
 
@@ -270,12 +268,12 @@ const entries = [
   /* Cadre de la taille de la section : le fondu y est appliqué, donc les bords sont toujours transparents */
   .works-bgwrap {
     position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
-    mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 12%, #000 42%, #000 68%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 12%, #000 42%, #000 68%, transparent 100%);
   }
   .works-bg {
     position: absolute; z-index: 0; left: -6%; top: -12%; width: 112%; height: 124%; max-width: none; object-fit: cover;
-    filter: blur(30px) saturate(1.2); opacity: .45; will-change: transform;
+    filter: blur(30px) saturate(1.1); opacity: .28; will-change: transform;
   }
   .works-inner { position: relative; z-index: 2; }
   .works-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(32px, 6vh, 64px); }
