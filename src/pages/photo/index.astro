@@ -10,8 +10,8 @@ const bg = single(content.pageBgs?.photo ?? null);
   <Backdrop photo={bg} />
   <div class="wrap">
     <header class="page-head">
-      <span class="mono">Galeries · {galleries.length}</span>
       <h1 class="display">Photo</h1>
+      <span class="mono">{galleries.length} galerie{galleries.length > 1 ? 's' : ''}</span>
     </header>
 
     <div class="cards">

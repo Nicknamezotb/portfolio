@@ -17,8 +17,8 @@ const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((
   <Backdrop photo={backdrop} />
   <div class="wrap">
     <header class="page-head">
-      {meta && <span class="mono">{meta}</span>}
       <h1 class="display">{p.title}</h1>
+      {meta && <span class="mono">{meta}</span>}
     </header>
 
     <div class="intro">

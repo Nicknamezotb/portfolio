@@ -12,8 +12,8 @@ const total = videos.reduce((n, c) => n + c.items.length, 0);
   <Backdrop photo={bg} />
   <div class="wrap">
     <header class="page-head">
-      <span class="mono">Projets · {total}</span>
       <h1 class="display">Vidéo</h1>
+      <span class="mono">{total} projet{total > 1 ? 's' : ''}</span>
     </header>
 
     {videos.filter((c) => c.items.length).map((cat) => (

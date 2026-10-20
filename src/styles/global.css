@@ -62,8 +62,9 @@ button { font: inherit; color: inherit; }
 .lede { font-size: clamp(16px, 1.25vw, 18px); line-height: 1.7; color: color-mix(in srgb, var(--text) 82%, var(--bg)); max-width: 60ch; }
 
 .page-head { padding-block: clamp(112px, 16vh, 160px) clamp(36px, 6vh, 64px); }
-.page-head h1 { font-size: clamp(48px, 7vw, 96px); }
-.page-head .mono { display: block; margin-bottom: 14px; }
+.page-head h1 { font-size: clamp(48px, 7vw, 96px); margin-left: -0.045em; /* compense la marge intégrée aux lettres de Bebas Neue : bord gauche aligné au reste */ }
+.page-head .mono { display: block; }
+.page-head h1 + .mono { margin-top: 16px; }
 
 .section { padding-block: clamp(48px, 8vh, 96px); }
 .section-title {

@@ -10,8 +10,8 @@ const bg = single(content.pageBgs?.creations ?? null);
   <Backdrop photo={bg} />
   <div class="wrap">
     <header class="page-head">
-      <span class="mono">Identités visuelles · {creations.length}</span>
       <h1 class="display">Créations</h1>
+      <span class="mono">{creations.length} identité{creations.length > 1 ? 's' : ''} visuelle{creations.length > 1 ? 's' : ''}</span>
     </header>
 
     <div class="cards">
