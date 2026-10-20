@@ -40,7 +40,13 @@
     "cards": {
       "photo": null,
       "video": null,
-      "creations": null
+      "creations": {
+        "src": "/media/a-75b531be9c93.webp",
+        "thumb": "/media/a-75b531be9c93-sm.webp",
+        "w": 2000,
+        "h": 2000,
+        "alt": ""
+      }
     },
     "featured": "machu-picchu"
   },
@@ -3577,10 +3583,10 @@
       "intro": "Après des années d'amitié, des treks dans les Dolomites, en Bavière sous la neige, et des années de camps avec les scouts, on voulait un plus gros projet. Depuis deux ans, on rêvait du pays des Incas. Comme souvent entre nous, si c'est dit, ce sera fait.\n\nS'ensuivent des mois d'attente et une motivation grandissante, jusqu'au départ le 17 juillet 2025.\n\nNos objectifs : ouvrir les yeux sur ce pays, rencontrer des locaux et des voyageurs, mais surtout pouvoir partager cette aventure.",
       "youtube": "0ZN13Pi7R9c",
       "cover": {
-        "src": "/media/a-9e089e3a127b.webp",
-        "thumb": "/media/a-9e089e3a127b-sm.webp",
+        "src": "/media/a-6ee2d4aba659.webp",
+        "thumb": "/media/a-6ee2d4aba659-sm.webp",
         "w": 2000,
-        "h": 1125,
+        "h": 1333,
         "alt": ""
       },
       "sections": [

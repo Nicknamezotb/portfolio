@@ -11,22 +11,23 @@ const [first, ...rest] = settings.name.trim().split(/\s+/);
 const firstVideo = videos.flatMap((c) => c.items)[0];
 const videoCount = videos.reduce((n, c) => n + c.items.length, 0);
 const featured = projects.find((p) => p.slug === home.featured) ?? projects[0];
-const featuredImg = featured && (single(featured.cover) ?? (featured.youtube ? { thumb: ytThumb(featured.youtube) } : cover([], featured.slug)));
+const featuredImg: { src?: string; thumb: string } | null | undefined =
+  featured && (single(featured.cover) ?? (featured.youtube ? { thumb: ytThumb(featured.youtube) } : cover([], featured.slug)));
 
 // Images des cartes : celle choisie dans l'admin, sinon une image par défaut tirée du contenu
 const cards = home.cards ?? { photo: null, video: null, creations: null };
 const entries = [
   {
     href: '/photo', title: 'Photo', meta: `${galleries.length} galeries`,
-    img: single(cards.photo)?.thumb ?? cover(galleries[0]?.photos, galleries[0]?.slug ?? 'photo')?.thumb,
+    img: single(cards.photo)?.src ?? cover(galleries[0]?.photos, galleries[0]?.slug ?? 'photo')?.src,
   },
   {
     href: '/video', title: 'Vidéo', meta: `${videoCount} projets`,
-    img: single(cards.video)?.thumb ?? (firstVideo ? ytThumb(firstVideo.youtube) : undefined),
+    img: single(cards.video)?.src ?? (firstVideo ? ytThumb(firstVideo.youtube) : undefined),
   },
   {
     href: '/creations', title: 'Créations', meta: `${creations.length} identités visuelles`,
-    img: single(cards.creations)?.thumb ?? cover(creations[0]?.sections.flatMap((s) => s.photos), creations[0]?.slug ?? 'creations')?.thumb,
+    img: single(cards.creations)?.src ?? cover(creations[0]?.sections.flatMap((s) => s.photos), creations[0]?.slug ?? 'creations')?.src,
   },
 ];
 ---
@@ -54,17 +55,23 @@ const entries = [
     <a href="#travaux" class="scroll" aria-label="Défiler"><span></span></a>
   </section>
 
-  <section id="travaux" class="wrap section">
-    <div class="section-title reveal">
-      <h2 class="display">Travaux</h2>
-    </div>
-    <div class="entries">
+  <section id="travaux" class="works wrap">
+    <header class="works-head">
+      <p class="mono reveal">Sélection</p>
+      <h2 class="display reveal" style="--i:1">Travaux</h2>
+    </header>
+
+    <!-- Composition décalée : chaque carte défile à sa propre vitesse (data-par) -->
+    <div class="works-grid">
       {entries.map((e, i) => (
-        <a href={url(e.href)} class="entry reveal" style={`--i:${i + 1}`}>
-          <div class="img-frame">{e.img && <img src={e.img} alt="" loading="lazy" />}</div>
-          <div class="entry-meta">
-            <h3 class="display">{e.title}</h3>
-            <span class="mono">{e.meta}</span>
+        <a href={url(e.href)} class={`work work-${i + 1}`} data-par={[0.08, -0.06, 0.12][i]} data-fade>
+          <div class="work-media">
+            <div class="zw">{e.img && <img data-zoom src={e.img} alt="" loading="lazy" />}</div>
+            <div class="work-cap">
+              <span class="mono">{e.meta}</span>
+              <h3 class="display">{e.title}</h3>
+              <span class="mono more">Découvrir <span>→</span></span>
+            </div>
           </div>
         </a>
       ))}
@@ -72,41 +79,104 @@ const entries = [
   </section>
 
   {featured && (
-    <section class="wrap section reveal">
-      <div class="section-title">
-        <h2 class="display">À la une</h2>
-        <span class="mono">{[featured.place, featured.date].filter(Boolean).join(' · ')}</span>
-      </div>
-      <a href={url(`/projets/${featured.slug}`)} class="feature">
-        <div class="img-frame feature-img">{featuredImg && <img src={featuredImg.thumb} alt="" loading="lazy" />}</div>
-        <div class="feature-text">
-          {featured.kicker && <p class="mono">{featured.kicker}</p>}
+    <section class="featured">
+      <a href={url(`/projets/${featured.slug}`)} class="feat" data-fade>
+        {featuredImg && <img data-zoom data-par="0.1" class="feat-img" src={featuredImg.src ?? featuredImg.thumb} alt="" loading="lazy" />}
+        <div class="feat-veil" aria-hidden="true"></div>
+        <div class="feat-text">
+          <p class="mono">À la une{featured.kicker && ` · ${featured.kicker}`}</p>
           <h3 class="display">{featured.title}</h3>
-          <p>{featured.intro.split(/\n\s*\n/)[0]}</p>
+          <p class="feat-intro">{featured.intro.split(/\n\s*\n/)[0]}</p>
           <span class="link-arrow">Voir le projet <span>→</span></span>
         </div>
+        {(featured.place || featured.date) && <p class="mono feat-meta">{[featured.place, featured.date].filter(Boolean).join(' · ')}</p>}
       </a>
     </section>
   )}
 </Base>
 
 <script>
-  // Défilement : le texte du hero s'estompe et monte, la photo glisse plus lentement (parallaxe)
-  const fade = document.querySelector<HTMLElement>('[data-hero-fade]');
-  const bg = document.querySelector<HTMLElement>('[data-hero-bg]');
+  // Animations liées au défilement, lissées (chaque valeur « glisse » vers sa cible au lieu de sauter) :
+  //  - hero : le texte s'estompe, monte et se floute ; la photo descend plus lentement (profondeur)
+  //  - [data-par]  : l'élément défile à sa propre vitesse (composition qui « respire »)
+  //  - [data-zoom] : l'image dézoome doucement en arrivant au centre de l'écran
+  //  - [data-fade] : fondu d'entrée par le bas, léger estompage en sortant par le haut
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (fade && !still) {
-    let ticking = false;
-    const update = () => {
-      const p = Math.min(1, scrollY / (innerHeight * 0.7));
-      fade.style.opacity = String(1 - p);
-      fade.style.transform = `translate3d(0, ${p * -60}px, 0)`;
-      fade.style.filter = p > 0.02 ? `blur(${p * 6}px)` : '';
-      if (bg) bg.style.transform = `translate3d(0, ${scrollY * 0.25}px, 0) scale(${1 + p * 0.06})`;
-      ticking = false;
+  const heroText = document.querySelector<HTMLElement>('[data-hero-fade]');
+  const heroBg = document.querySelector<HTMLElement>('[data-hero-bg]');
+  const pars = [...document.querySelectorAll<HTMLElement>('[data-par]')];
+  const zooms = [...document.querySelectorAll<HTMLElement>('[data-zoom]')];
+  const fades = [...document.querySelectorAll<HTMLElement>('[data-fade]')];
+
+  const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const smooth = (t: number) => t * t * (3 - 2 * t);
+  const state = new Map<HTMLElement, Record<string, number>>();
+  const lerp = (el: HTMLElement, key: string, target: number, k = 0.12) => {
+    const s = state.get(el) ?? (state.set(el, {}), state.get(el)!);
+    const cur = s[key] ?? target;
+    const next = cur + (target - cur) * k;
+    s[key] = Math.abs(next - target) < 0.0005 ? target : next;
+    return { v: s[key], moving: s[key] !== target };
+  };
+
+  if (still) {
+    fades.forEach((el) => (el.style.opacity = '1'));
+  } else {
+    let running = false;
+    const frame = () => {
+      let moving = false;
+      const vh = innerHeight;
+      const mobile = innerWidth < 720;
+
+      if (heroText) {
+        const p = lerp(heroText, 'p', clamp(scrollY / (vh * 0.7)));
+        moving ||= p.moving;
+        heroText.style.opacity = String(1 - p.v);
+        heroText.style.transform = `translate3d(0, ${p.v * -70}px, 0)`;
+        heroText.style.filter = p.v > 0.01 ? `blur(${p.v * 8}px)` : '';
+        if (heroBg) heroBg.style.transform = `translate3d(0, ${p.v * vh * 0.18}px, 0) scale(${1 + p.v * 0.08})`;
+      }
+
+      for (const el of fades) {
+        const r = el.getBoundingClientRect();
+        // 0 quand le haut de l'élément touche le bas de l'écran, 1 quand il est monté de 35 % de l'écran
+        const enter = smooth(clamp((vh - r.top) / (vh * 0.35)));
+        // estompage léger quand l'élément quitte l'écran par le haut
+        const leave = 1 - 0.55 * smooth(clamp(-r.bottom / (vh * 0.4) + 1.6));
+        const o = lerp(el, 'o', enter * leave, 0.1);
+        moving ||= o.moving;
+        el.style.opacity = o.v.toFixed(3);
+        el.style.setProperty('--enter', o.v.toFixed(3));
+      }
+
+      for (const el of pars) {
+        const r = el.getBoundingClientRect();
+        const center = r.top + r.height / 2 - vh / 2;
+        const speed = parseFloat(el.dataset.par || '0') * (mobile ? 0.4 : 1);
+        const y = lerp(el, 'y', -center * speed, 0.1);
+        moving ||= y.moving;
+        el.style.transform = `translate3d(0, ${y.v.toFixed(2)}px, 0)`;
+      }
+
+      for (const img of zooms) {
+        const r = (img.closest('.work-media, .feat') ?? img).getBoundingClientRect();
+        const t = clamp(1 - Math.abs(r.top + r.height / 2 - vh / 2) / vh);
+        const s = lerp(img, 's', 1.16 - 0.16 * smooth(t), 0.1);
+        moving ||= s.moving;
+        // l'image de « À la une » a aussi une parallaxe : on combine les deux
+        const y = img.dataset.par ? (state.get(img)?.y ?? 0) : 0;
+        img.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0) scale(${s.v.toFixed(4)})`;
+      }
+
+      running = moving;
+      if (moving) requestAnimationFrame(frame);
     };
-    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    update();
+    const kick = () => { if (!running) { running = true; requestAnimationFrame(frame); } };
+    addEventListener('scroll', kick, { passive: true });
+    addEventListener('resize', kick);
+    // premier rendu : on part de l'état « invisible » pour que les cartes glissent en place
+    fades.forEach((el) => state.set(el, { o: 0 }));
+    kick();
   }
 </script>
 
@@ -183,26 +253,82 @@ const entries = [
   .hero.bare { height: 80svh; }
   .hero.bare .veil, .hero.bare .scroll { display: none; }
 
-  /* ---------- Sections suivantes ---------- */
-  .entries { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 2vw, 28px); }
-  .entry .img-frame { aspect-ratio: 4 / 5; }
-  .entry:hover img { transform: scale(1.04); }
-  .entry-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 14px; }
-  .entry h3 { font-size: clamp(28px, 2.8vw, 38px); transition: color .3s; }
-  .entry:hover h3 { color: var(--accent); }
+  /* ---------- Travaux : composition éditoriale décalée ---------- */
+  .works { padding-block: clamp(110px, 20vh, 220px) clamp(80px, 14vh, 160px); }
+  .works-head { margin-bottom: clamp(48px, 9vh, 110px); }
+  .works-head .mono { margin: 0 0 14px; }
+  .works-head h2 { font-size: clamp(56px, 8vw, 120px); }
 
-  .feature { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(24px, 4vw, 56px); align-items: end; }
-  .feature-img { aspect-ratio: 16 / 9; }
-  .feature:hover .feature-img img { transform: scale(1.03); }
-  .feature-text .mono { margin: 0 0 10px; }
-  .feature-text h3 { font-size: clamp(32px, 3.4vw, 48px); margin-bottom: 14px; }
-  .feature-text p:not(.mono) { color: var(--muted); margin: 0 0 24px; }
+  .works-grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: clamp(16px, 2.5vw, 40px); }
+  .work { position: relative; display: block; opacity: 0; will-change: transform, opacity; }
+  .work-1 { grid-column: 1 / span 5; grid-row: 1; }
+  .work-2 { grid-column: 7 / span 6; grid-row: 1; margin-top: clamp(140px, 30vh, 340px); }
+  .work-3 { grid-column: 2 / span 5; grid-row: 2; margin-top: clamp(40px, 8vh, 120px); }
+  .work-1 .work-media { aspect-ratio: 4 / 5; }
+  .work-2 .work-media { aspect-ratio: 4 / 3; }
+  .work-3 .work-media { aspect-ratio: 1; }
+
+  .work-media {
+    position: relative; overflow: hidden; border-radius: 4px; background: var(--raised);
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / .35), 0 2px 6px rgb(0 0 0 / .04);
+    transition: opacity .9s var(--ease-out), filter .9s var(--ease-out), box-shadow .9s var(--ease-out);
+  }
+  .zw { position: absolute; inset: 0; transition: transform 1.6s var(--ease-out); }
+  .zw img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+  /* Voile sombre doux en bas pour le texte, plus marqué au survol */
+  .work-media::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgb(10 11 14 / .62) 0%, rgb(10 11 14 / .18) 38%, transparent 62%);
+    opacity: .85; transition: opacity .9s var(--ease-out);
+  }
+  .work-cap {
+    position: absolute; z-index: 1; left: clamp(18px, 2.4vw, 32px); right: clamp(18px, 2.4vw, 32px); bottom: clamp(18px, 2.4vw, 30px);
+    color: #fff; display: grid; gap: 6px;
+    transform: translateY(calc((1 - var(--enter, 1)) * 24px));
+  }
+  .work-cap .mono { color: rgb(255 255 255 / .78); }
+  .work-cap h3 { font-size: clamp(40px, 4.4vw, 72px); text-shadow: 0 2px 24px rgb(0 0 0 / .25); }
+  .more { display: inline-flex; gap: 8px; opacity: 0; transform: translateY(8px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+
+  .work:hover .zw { transform: scale(1.05); }
+  .work:hover .work-media::after { opacity: 1; }
+  .work:hover .more { opacity: 1; transform: none; }
+  .work:hover .work-media { box-shadow: 0 50px 90px -40px rgb(0 0 0 / .45), 0 2px 6px rgb(0 0 0 / .05); }
+  /* Les autres cartes s'effacent légèrement quand on en survole une */
+  .works-grid:has(.work:hover) .work:not(:hover) .work-media { opacity: .45; filter: saturate(.6); }
+
+  /* ---------- À la une : grand panneau avec le même voile que le hero ---------- */
+  .featured { padding-block: clamp(40px, 8vh, 100px) 0; }
+  .feat {
+    position: relative; display: block; overflow: hidden; opacity: 0;
+    width: calc(100% - 2 * var(--gutter)); max-width: 1560px; margin-inline: auto;
+    height: min(88svh, 860px); min-height: 520px; border-radius: 4px;
+  }
+  .feat-img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
+  .feat-veil {
+    position: absolute; inset: 0; width: min(760px, 64%);
+    background: linear-gradient(to right, color-mix(in srgb, var(--bg) 78%, transparent), color-mix(in srgb, var(--bg) 55%, transparent) 55%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    mask-image: linear-gradient(to right, #000 50%, transparent); -webkit-mask-image: linear-gradient(to right, #000 50%, transparent);
+  }
+  .feat-text {
+    position: absolute; left: clamp(24px, 5vw, 80px); bottom: clamp(28px, 7vh, 80px); max-width: 440px;
+    transform: translateY(calc((1 - var(--enter, 1)) * 40px));
+  }
+  .feat-text .mono { margin: 0 0 16px; color: var(--text); }
+  .feat-text h3 { font-size: clamp(48px, 6vw, 96px); line-height: .9; text-shadow: var(--soft-shadow); }
+  .feat-intro { margin: 20px 0 28px; color: color-mix(in srgb, var(--text) 80%, transparent); text-shadow: var(--soft-shadow); }
+  .feat-meta { position: absolute; right: clamp(20px, 3vw, 40px); bottom: clamp(20px, 3vw, 36px); margin: 0; color: #fff; text-shadow: 0 1px 8px rgb(0 0 0 / .45); }
+  .feat .link-arrow { transition: color .4s, border-color .4s; }
+  .feat:hover .link-arrow { color: var(--accent); border-color: var(--accent); }
 
   @media (max-width: 860px) {
-    .entries { grid-template-columns: 1fr 1fr; }
-    .entries .entry:last-child { grid-column: span 2; }
-    .entries .entry:last-child .img-frame { aspect-ratio: 16 / 9; }
-    .feature { grid-template-columns: 1fr; }
+    .works-grid { grid-template-columns: repeat(6, 1fr); row-gap: 56px; }
+    .work-1 { grid-column: 1 / span 5; grid-row: auto; }
+    .work-2 { grid-column: 2 / span 5; grid-row: auto; margin-top: 0; }
+    .work-3 { grid-column: 1 / span 5; grid-row: auto; margin-top: 0; }
+    .work-2 .work-media { aspect-ratio: 4 / 5; }
+    .more { opacity: 1; transform: none; }
   }
   @media (max-width: 640px) {
     /* Sur mobile, le voile remonte depuis le bas */
@@ -224,9 +350,17 @@ const entries = [
     .caption, .side-right .caption { top: 84px; bottom: auto; right: var(--gutter); left: auto; }
     .scroll { display: none; }
   }
-  @media (max-width: 520px) {
-    .entries { grid-template-columns: 1fr; }
-    .entries .entry:last-child { grid-column: auto; }
-    .entry .img-frame, .entries .entry:last-child .img-frame { aspect-ratio: 3 / 2; }
+  @media (max-width: 640px) {
+    .feat { height: 82svh; }
+    .feat-veil {
+      inset: auto 0 0; width: 100%; height: 75%;
+      background: linear-gradient(to top, color-mix(in srgb, var(--bg) 82%, transparent), color-mix(in srgb, var(--bg) 55%, transparent) 55%, transparent);
+      mask-image: linear-gradient(to top, #000 50%, transparent); -webkit-mask-image: linear-gradient(to top, #000 50%, transparent);
+    }
+    .feat-text { right: 24px; }
+    .feat-meta { top: 20px; bottom: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .work, .feat { opacity: 1; }
   }
 </style>
