@@ -70,16 +70,11 @@
         "alt": ""
       },
       "creations": {
-        "src": "/media/a-948511b6a008.webp",
-        "thumb": "/media/a-948511b6a008-sm.webp",
-        "w": 1333,
+        "src": "/media/creations-cover.webp",
+        "thumb": "/media/creations-cover-sm.webp",
+        "w": 1600,
         "h": 2000,
-        "alt": "",
-        "crop": {
-          "x": 66.3,
-          "y": 26.8,
-          "zoom": 1
-        }
+        "alt": "Créations visuelles : NEVERA, EXALTE, BAIANA"
       }
     },
     "featured": "machu-picchu"
