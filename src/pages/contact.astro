@@ -25,6 +25,7 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
         <label><span class="mono">Nom</span><input name="name" autocomplete="name" required /></label>
         <label><span class="mono">E-mail</span><input name="email" type="email" autocomplete="email" required /></label>
         <label><span class="mono">Message</span><textarea name="message" rows="6" required></textarea></label>
+        <input type="hidden" name="_subject" value="Nouveau message depuis le portfolio" />
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
         <button type="submit" class="send">Envoyer <span aria-hidden="true">→</span></button>
         <p class="status" role="status" aria-live="polite"></p>
