@@ -152,6 +152,15 @@ export function Home() {
       </Card>
 
       <Card title="Images des rubriques">
+        <div class="field wide">
+          <PhotoManager
+            label="Photo de fond de la section « Travaux »"
+            single
+            photos={h.worksBg ? [h.worksBg] : []}
+            onChange={(p) => set((d) => (d.home.worksBg = p[0] ?? null))}
+            hint="Affichée floutée et estompée derrière les trois cartes, pour casser le fond uni. Sans photo, le fond reste uni. "
+          />
+        </div>
         {(Object.keys(CARD_LABELS) as (keyof typeof CARD_LABELS)[]).map((k) => (
           <div class="field">
             <PhotoManager

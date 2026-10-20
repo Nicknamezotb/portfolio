@@ -48,7 +48,14 @@
         "alt": ""
       }
     },
-    "featured": "machu-picchu"
+    "featured": "machu-picchu",
+    "worksBg": {
+      "src": "/media/a-8510dda58716.webp",
+      "thumb": "/media/a-8510dda58716-sm.webp",
+      "w": 2000,
+      "h": 1334,
+      "alt": ""
+    }
   },
   "videos": [
     {

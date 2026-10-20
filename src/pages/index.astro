@@ -15,6 +15,7 @@ const featuredImg: { src?: string; thumb: string } | null | undefined =
   featured && (single(featured.cover) ?? (featured.youtube ? { thumb: ytThumb(featured.youtube) } : cover([], featured.slug)));
 
 // Images des cartes : celle choisie dans l'admin, sinon une image par défaut tirée du contenu
+const worksBg = single(home.worksBg ?? null);
 const cards = home.cards ?? { photo: null, video: null, creations: null };
 const entries = [
   {
@@ -55,7 +56,9 @@ const entries = [
     <a href="#travaux" class="scroll" aria-label="Défiler"><span></span></a>
   </section>
 
-  <section id="travaux" class="works wrap">
+  <section id="travaux" class:list={["works", { "has-bg": worksBg }]}>
+    {worksBg && <div class="works-bgwrap" aria-hidden="true"><img class="works-bg" data-par="0.05" src={worksBg.src} alt="" loading="lazy" /></div>}
+    <div class="wrap works-inner">
     <header class="works-head">
       <p class="mono reveal">Sélection</p>
       <h2 class="display reveal" style="--i:1">Travaux</h2>
@@ -64,7 +67,7 @@ const entries = [
     <!-- Composition décalée : chaque carte défile à sa propre vitesse (data-par) -->
     <div class="works-grid">
       {entries.map((e, i) => (
-        <a href={url(e.href)} class={`work work-${i + 1}`} data-par={[0.08, -0.06, 0.12][i]} data-fade>
+        <a href={url(e.href)} class={`work work-${i + 1}`} data-par={[0.02, -0.025, 0.035][i]} data-fade>
           <div class="work-media">
             <div class="zw">{e.img && <img data-zoom src={e.img} alt="" loading="lazy" />}</div>
             <div class="work-cap">
@@ -76,12 +79,13 @@ const entries = [
         </a>
       ))}
     </div>
+    </div>
   </section>
 
   {featured && (
     <section class="featured">
       <a href={url(`/projets/${featured.slug}`)} class="feat" data-fade>
-        {featuredImg && <img data-zoom data-par="0.1" class="feat-img" src={featuredImg.src ?? featuredImg.thumb} alt="" loading="lazy" />}
+        {featuredImg && <img data-zoom data-par="0.04" class="feat-img" src={featuredImg.src ?? featuredImg.thumb} alt="" loading="lazy" />}
         <div class="feat-veil" aria-hidden="true"></div>
         <div class="feat-text">
           <p class="mono">À la une{featured.kicker && ` · ${featured.kicker}`}</p>
@@ -161,7 +165,7 @@ const entries = [
       for (const img of zooms) {
         const r = (img.closest('.work-media, .feat') ?? img).getBoundingClientRect();
         const t = clamp(1 - Math.abs(r.top + r.height / 2 - vh / 2) / vh);
-        const s = lerp(img, 's', 1.16 - 0.16 * smooth(t), 0.1);
+        const s = lerp(img, 's', 1.045 - 0.045 * smooth(t), 0.1);
         moving ||= s.moving;
         // l'image de « À la une » a aussi une parallaxe : on combine les deux
         const y = img.dataset.par ? (state.get(img)?.y ?? 0) : 0;
@@ -253,58 +257,64 @@ const entries = [
   .hero.bare { height: 80svh; }
   .hero.bare .veil, .hero.bare .scroll { display: none; }
 
-  /* ---------- Travaux : composition éditoriale décalée ---------- */
-  .works { padding-block: clamp(110px, 20vh, 220px) clamp(80px, 14vh, 160px); }
-  .works-head { margin-bottom: clamp(48px, 9vh, 110px); }
-  .works-head .mono { margin: 0 0 14px; }
-  .works-head h2 { font-size: clamp(56px, 8vw, 120px); }
+  /* ---------- Travaux : trois cartes compactes, légèrement décalées, sur une photo de fond estompée ---------- */
+  .works { position: relative; overflow: hidden; padding-block: clamp(96px, 16vh, 170px) clamp(72px, 12vh, 130px); }
+  /* Cadre de la taille de la section : le fondu y est appliqué, donc les bords sont toujours transparents */
+  .works-bgwrap {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  }
+  .works-bg {
+    position: absolute; z-index: 0; left: -6%; top: -12%; width: 112%; height: 124%; max-width: none; object-fit: cover;
+    filter: blur(30px) saturate(1.2); opacity: .45; will-change: transform;
+  }
+  .works-inner { position: relative; z-index: 2; }
+  .works-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: clamp(32px, 6vh, 64px); }
+  .works-head .mono { margin: 0; order: 2; }
+  .works-head h2 { font-size: clamp(40px, 5vw, 72px); }
 
-  .works-grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: clamp(16px, 2.5vw, 40px); }
+  .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2vw, 28px); max-width: 1120px; }
   .work { position: relative; display: block; opacity: 0; will-change: transform, opacity; }
-  .work-1 { grid-column: 1 / span 5; grid-row: 1; }
-  .work-2 { grid-column: 7 / span 6; grid-row: 1; margin-top: clamp(140px, 30vh, 340px); }
-  .work-3 { grid-column: 2 / span 5; grid-row: 2; margin-top: clamp(40px, 8vh, 120px); }
-  .work-1 .work-media { aspect-ratio: 4 / 5; }
-  .work-2 .work-media { aspect-ratio: 4 / 3; }
-  .work-3 .work-media { aspect-ratio: 1; }
+  .work-2 { margin-top: clamp(28px, 6vh, 64px); }
+  .work-3 { margin-top: clamp(10px, 2vh, 24px); }
+  .work-media { aspect-ratio: 4 / 5; }
 
   .work-media {
-    position: relative; overflow: hidden; border-radius: 4px; background: var(--raised);
-    box-shadow: 0 40px 80px -40px rgb(0 0 0 / .35), 0 2px 6px rgb(0 0 0 / .04);
-    transition: opacity .9s var(--ease-out), filter .9s var(--ease-out), box-shadow .9s var(--ease-out);
+    position: relative; overflow: hidden; border-radius: 6px; background: var(--raised);
+    box-shadow: 0 24px 48px -28px rgb(0 0 0 / .4), 0 1px 3px rgb(0 0 0 / .05);
+    transition: opacity .9s var(--ease-out), filter .9s var(--ease-out), box-shadow .9s var(--ease-out), transform .9s var(--ease-out);
   }
-  .zw { position: absolute; inset: 0; transition: transform 1.6s var(--ease-out); }
+  .zw { position: absolute; inset: 0; transition: transform 1.4s var(--ease-out); }
   .zw img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
-  /* Voile sombre doux en bas pour le texte, plus marqué au survol */
   .work-media::after {
     content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(to top, rgb(10 11 14 / .62) 0%, rgb(10 11 14 / .18) 38%, transparent 62%);
-    opacity: .85; transition: opacity .9s var(--ease-out);
+    background: linear-gradient(to top, rgb(10 11 14 / .55) 0%, rgb(10 11 14 / .12) 40%, transparent 65%);
+    opacity: .9; transition: opacity .9s var(--ease-out);
   }
   .work-cap {
-    position: absolute; z-index: 1; left: clamp(18px, 2.4vw, 32px); right: clamp(18px, 2.4vw, 32px); bottom: clamp(18px, 2.4vw, 30px);
-    color: #fff; display: grid; gap: 6px;
-    transform: translateY(calc((1 - var(--enter, 1)) * 24px));
+    position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 16px;
+    color: #fff; display: grid; gap: 4px;
+    transform: translateY(calc((1 - var(--enter, 1)) * 14px));
   }
-  .work-cap .mono { color: rgb(255 255 255 / .78); }
-  .work-cap h3 { font-size: clamp(40px, 4.4vw, 72px); text-shadow: 0 2px 24px rgb(0 0 0 / .25); }
-  .more { display: inline-flex; gap: 8px; opacity: 0; transform: translateY(8px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+  .work-cap .mono { color: rgb(255 255 255 / .8); font-size: 10px; }
+  .work-cap h3 { font-size: clamp(28px, 2.6vw, 38px); text-shadow: 0 2px 18px rgb(0 0 0 / .25); }
+  .more { display: inline-flex; gap: 6px; opacity: 0; transform: translateY(6px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); font-size: 10px; }
 
-  .work:hover .zw { transform: scale(1.05); }
+  .work:hover .work-media { transform: translateY(-4px); box-shadow: 0 32px 56px -28px rgb(0 0 0 / .5), 0 1px 3px rgb(0 0 0 / .06); }
+  .work:hover .zw { transform: scale(1.03); }
   .work:hover .work-media::after { opacity: 1; }
   .work:hover .more { opacity: 1; transform: none; }
-  .work:hover .work-media { box-shadow: 0 50px 90px -40px rgb(0 0 0 / .45), 0 2px 6px rgb(0 0 0 / .05); }
-  /* Les autres cartes s'effacent légèrement quand on en survole une */
-  .works-grid:has(.work:hover) .work:not(:hover) .work-media { opacity: .45; filter: saturate(.6); }
+  .works-grid:has(.work:hover) .work:not(:hover) .work-media { opacity: .55; filter: saturate(.7); }
 
   /* ---------- À la une : grand panneau avec le même voile que le hero ---------- */
   .featured { padding-block: clamp(40px, 8vh, 100px) 0; }
   .feat {
     position: relative; display: block; overflow: hidden; opacity: 0;
     width: calc(100% - 2 * var(--gutter)); max-width: 1560px; margin-inline: auto;
-    height: min(88svh, 860px); min-height: 520px; border-radius: 4px;
+    height: min(62svh, 580px); min-height: 420px; border-radius: 6px; max-width: 1320px;
   }
-  .feat-img { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; will-change: transform; }
+  .feat-img { position: absolute; inset: -4% 0; width: 100%; height: 108%; object-fit: cover; will-change: transform; }
   .feat-veil {
     position: absolute; inset: 0; width: min(760px, 64%);
     background: linear-gradient(to right, color-mix(in srgb, var(--bg) 78%, transparent), color-mix(in srgb, var(--bg) 55%, transparent) 55%, transparent);
@@ -316,20 +326,19 @@ const entries = [
     transform: translateY(calc((1 - var(--enter, 1)) * 40px));
   }
   .feat-text .mono { margin: 0 0 16px; color: var(--text); }
-  .feat-text h3 { font-size: clamp(48px, 6vw, 96px); line-height: .9; text-shadow: var(--soft-shadow); }
-  .feat-intro { margin: 20px 0 28px; color: color-mix(in srgb, var(--text) 80%, transparent); text-shadow: var(--soft-shadow); }
+  .feat-text h3 { font-size: clamp(36px, 4vw, 60px); line-height: .9; text-shadow: var(--soft-shadow); }
+  .feat-intro { font-size: 14px; margin: 14px 0 22px; color: color-mix(in srgb, var(--text) 80%, transparent); text-shadow: var(--soft-shadow); }
   .feat-meta { position: absolute; right: clamp(20px, 3vw, 40px); bottom: clamp(20px, 3vw, 36px); margin: 0; color: #fff; text-shadow: 0 1px 8px rgb(0 0 0 / .45); }
   .feat .link-arrow { transition: color .4s, border-color .4s; }
   .feat:hover .link-arrow { color: var(--accent); border-color: var(--accent); }
 
   @media (max-width: 860px) {
-    .works-grid { grid-template-columns: repeat(6, 1fr); row-gap: 56px; }
-    .work-1 { grid-column: 1 / span 5; grid-row: auto; }
-    .work-2 { grid-column: 2 / span 5; grid-row: auto; margin-top: 0; }
-    .work-3 { grid-column: 1 / span 5; grid-row: auto; margin-top: 0; }
-    .work-2 .work-media { aspect-ratio: 4 / 5; }
+    .works-grid { grid-template-columns: 1fr 1fr; }
+    .work-3 { grid-column: span 2; margin-top: 0; }
+    .work-3 .work-media { aspect-ratio: 16 / 9; }
+    .work-2 { margin-top: 32px; }
     .more { opacity: 1; transform: none; }
-  }
+  }}
   @media (max-width: 640px) {
     /* Sur mobile, le voile remonte depuis le bas */
     .hero { height: 92svh; min-height: 560px; }

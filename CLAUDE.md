@@ -61,7 +61,7 @@ src/
 ```
 
 - **Thème** : seules `--bg`, `--text` et `--accent` viennent de `settings.theme` (injectées en `html:root` dans Base.astro, spécificité plus forte que global.css). Toutes les autres teintes (`--muted`, `--line`, `--raised`…) sont dérivées par `color-mix()`. Thème clair par défaut (#f5f3ee / #17181c / #3f6a91).
-- **Accueil** : `home.heroPhoto`, `heroSide` (left/right), `heroOpacity` (0–100, opacité du voile), `heroCaption`, `cards.{photo,video,creations}` (null = image par défaut tirée du contenu), `featured` (slug de projet). Sur l'accueil, le menu desktop est une pastille en verre (`body.home:not(.scrolled)`).
+- **Accueil** : `home.heroPhoto`, `heroSide` (left/right), `heroOpacity` (0–100, opacité du voile), `heroCaption`, `worksBg` (photo floutée derrière « Travaux », masque sur `.works-bgwrap`), `cards.{photo,video,creations}` (null = image par défaut tirée du contenu), `featured` (slug de projet). Sur l'accueil, le menu desktop est une pastille en verre (`body.home:not(.scrolled)`).
 - **Redirections** des anciennes URL Adobe (`/projet-mp`, `/work`, `/copie-de-nevera`…) dans `astro.config.mjs` → `redirects`.
 - **Miniatures YouTube** : `maxresdefault` (16/9) ; `hqdefault` a des bandes noires. VideoEmbed retombe sur hqdefault si maxres n'existe pas.
 

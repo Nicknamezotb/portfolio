@@ -69,6 +69,7 @@ export type Content = {
     heroCaption: string;           // petite légende sur la photo (ex. « Paris, 2025 »)
     heroSide: 'left' | 'right';    // côté du texte
     heroOpacity: number;           // opacité du voile derrière le texte, 0–100
+    worksBg: Photo | null;          // photo floutée derrière la section « Travaux »
     cards: { photo: Photo | null; video: Photo | null; creations: Photo | null };
     featured: string;
   };
