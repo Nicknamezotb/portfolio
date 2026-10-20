@@ -26,11 +26,11 @@
     "demoPhotos": true
   },
   "home": {
-    "tagline": "Je raconte des histoires en images : reportages, événements, voyages et identités visuelles.",
-    "heroPhoto": null,
     "heroCaption": "",
     "heroSide": "left",
     "heroOpacity": 55,
+    "tagline": "Je raconte des histoires en images : reportages, événements, voyages...",
+    "heroPhoto": null,
     "cards": {
       "photo": null,
       "video": null,
