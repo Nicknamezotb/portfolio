@@ -4,29 +4,59 @@ const { settings } = content;
 ---
 <footer class="footer">
   <div class="wrap">
-    <div class="cta">
-      <p class="mono">Un projet, une collaboration ?</p>
-      <a href={url('/contact')} class="display big">Parlons-en <span aria-hidden="true">→</span></a>
+    <!-- Encart de contact : panneau arrondi et doux, sans trait de séparation -->
+    <div class="contact-card reveal">
+      <div class="cc-text">
+        <p class="mono">Un projet, une collaboration ?</p>
+        <h2 class="display">Travaillons ensemble</h2>
+      </div>
+      <div class="cc-actions">
+        <a href={url('/contact')} class="pill solid">Me contacter</a>
+        <a href={`mailto:${settings.email}`} class="pill">{settings.email}</a>
+      </div>
     </div>
+
     <div class="bottom">
       <span class="mono">© {new Date().getFullYear()} {settings.name}</span>
       <ul>
         {settings.socials.map((s) => <li><a class="mono" href={s.url} target="_blank" rel="noopener">{s.label}</a></li>)}
-        <li><a class="mono" href={`mailto:${settings.email}`}>E-mail</a></li>
       </ul>
     </div>
   </div>
 </footer>
 
 <style>
-  .footer { border-top: 1px solid var(--line); margin-top: clamp(56px, 10vh, 112px); }
-  .cta { padding-block: clamp(48px, 8vh, 88px); }
-  .cta .mono { margin: 0 0 12px; }
-  .big { font-size: clamp(44px, 6vw, 80px); display: inline-block; transition: color .3s; }
-  .big span { display: inline-block; transition: transform .4s var(--ease); }
-  .big:hover { color: var(--accent); }
-  .big:hover span { transform: translateX(10px); }
-  .bottom { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding: 20px 0 28px; border-top: 1px solid var(--line); }
-  ul { list-style: none; display: flex; flex-wrap: wrap; gap: 20px; margin: 0; padding: 0; }
+  .footer { margin-top: clamp(64px, 12vh, 140px); padding-bottom: 8px; }
+
+  .contact-card {
+    display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
+    padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 56px);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--text) 4%, var(--bg));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 6%, transparent);
+  }
+  .cc-text .mono { margin: 0 0 10px; }
+  .cc-text h2 { font-size: clamp(32px, 3.6vw, 52px); }
+
+  .cc-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill {
+    display: inline-flex; align-items: center; height: 46px; padding: 0 22px; border-radius: 999px;
+    font-size: 14px; font-weight: 500; white-space: nowrap;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 16%, transparent);
+    transition: background .4s var(--ease-out), color .4s var(--ease-out), box-shadow .4s var(--ease-out), transform .4s var(--ease-out);
+  }
+  .pill:hover { box-shadow: inset 0 0 0 1px var(--text); transform: translateY(-2px); }
+  .pill.solid { background: var(--text); color: var(--bg); box-shadow: none; }
+  .pill.solid:hover { background: var(--accent); }
+
+  .bottom { display: flex; flex-wrap: wrap; gap: 14px 24px; justify-content: space-between; align-items: center; padding: 28px 4px 24px; }
+  ul { list-style: none; display: flex; flex-wrap: wrap; gap: 22px; margin: 0; padding: 0; }
+  ul a { transition: color .3s; }
   ul a:hover { color: var(--text); }
+
+  @media (max-width: 640px) {
+    .cc-actions { width: 100%; }
+    .pill { flex: 1 1 auto; justify-content: center; }
+    .bottom { flex-direction: column-reverse; align-items: flex-start; }
+  }
 </style>
