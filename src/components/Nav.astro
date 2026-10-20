@@ -34,7 +34,7 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
     -webkit-backdrop-filter: blur(calc(var(--n) * 18px)) saturate(calc(1 + var(--n) * .15));
     border-bottom: 1px solid color-mix(in srgb, var(--line) calc(var(--n) * 100%), transparent);
   }
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: calc(72px - var(--n) * 8px); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; } /* hauteur fixe : rien ne bouge pendant le défilement */
   .brand { font-size: 24px; letter-spacing: .04em; position: relative; z-index: 2; }
   /* Accueil : le nom est déjà en grand sur la photo, il apparaît dans le menu au fil du défilement */
   :global(body.home:not(.menu-open)) .brand {
@@ -46,7 +46,7 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
 
   nav { display: flex; gap: clamp(22px, 3vw, 40px); }
   nav a {
-    font-family: var(--font-mono); font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+    font-family: var(--font-mono); font-size: 14px; letter-spacing: .12em; text-transform: uppercase;
     color: var(--muted); position: relative; padding: 8px 0;
     transition: color .4s var(--ease), text-shadow .6s var(--ease);
   }
@@ -59,8 +59,8 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
 
   /* Accueil, en haut de page : liens posés sur la photo, avec la même ombre douce que le grand nom */
   @media (min-width: 721px) {
-    nav { padding: 6px 4px; transition: padding .6s var(--ease); }
-    :global(body.home:not(.scrolled)) nav a { color: var(--text); text-shadow: var(--soft-shadow); font-size: 14px; }
+    nav { padding: 6px 4px; }
+    :global(body.home:not(.scrolled)) nav a { color: var(--text); text-shadow: var(--soft-shadow); }
   }
   .burger { display: none; background: none; border: 0; width: 40px; height: 40px; cursor: pointer; position: relative; margin-right: -8px; }
   .burger span { position: absolute; left: 9px; right: 9px; height: 1.5px; background: var(--text); transition: transform .35s var(--ease); }
