@@ -48,7 +48,7 @@ src/
   lib/media.ts           content, url(), photos()/cover()/single() (+ repli démo), ytThumb()
   lib/lightbox.ts        visionneuse plein écran (vanilla)
   layouts/Base.astro     <head>, thème injecté en variables CSS, prop bodyClass
-  components/            Nav, Footer, PhotoGrid (masonry en colonnes CSS), VideoEmbed (façade YouTube),
+  components/            Nav, Footer, PhotoGrid (rangées justifiées en flex : --r = ratio, --rh = hauteur de rangée ; prop columns = taille), Footer (encart « Travaillons ensemble » arrondi, sans traits), VideoEmbed (façade YouTube),
                          Tile (carte au style de l'accueil : arrondi, ombre, texte sur photo, survol), Backdrop (photo floutée en haut de page)
   pages/
     index.astro          accueil : hero plein écran + voile, cartes rubriques, projet à la une
@@ -67,6 +67,10 @@ src/
 - Un 2e `astro dev` est refusé si une autre session en fait tourner un : utiliser la config `portfolio-build` (astro preview du build, port 4330).
 - **Redirections** des anciennes URL Adobe (`/projet-mp`, `/work`, `/copie-de-nevera`…) dans `astro.config.mjs` → `redirects`.
 - **Miniatures YouTube** : `maxresdefault` (16/9) ; `hqdefault` a des bandes noires. VideoEmbed retombe sur hqdefault si maxres n'existe pas.
+
+- **Texte enrichi** : `rich()` (media.ts) transforme `**mot**` en gras (HTML échappé). Utilisé pour l'intro des projets (page projet + « À la une »).
+- **Page projet** : bannière photo de couverture arrondie avec titre incrusté, puis texte | vidéo côte à côte, puis sections photo compactes (PhotoGrid columns=5).
+- **Accueil** : cartes Photo/Vidéo/Créations alignées (pas de décalage ni parallaxe sur les cartes), survol = seule la carte visée se soulève ; pas d'indicateur de défilement ni de liens sous l'accroche ; barre de menu progressive via la variable CSS `--nav` (0→1) pilotée par le défilement.
 
 ## Back-office (`src/admin/`)
 
@@ -92,6 +96,10 @@ Pas de serveur : l'admin lit et écrit le repo via l'API GitHub, depuis le navig
 
 ## Pièges de l'environnement
 
+- **Plusieurs sessions Claude (forks) peuvent travailler en même temps sur ce dossier** : toujours `git pull --rebase --autostash` avant de modifier, ne committer que ses propres fichiers (`git add <fichiers>`), et prévenir Quentin si des modifications inconnues apparaissent.
+- Déploiements GitHub Pages parfois en échec côté GitHub (502, timeout, « cancelled » quand deux pushs se suivent) : relancer avec `gh workflow run deploy.yml`.
+- Le panneau navigateur caché met requestAnimationFrame en pause : pour tester les animations, remplacer `window.requestAnimationFrame` par un setTimeout dans la page.
+
 - Bash = Git Bash sous Windows. **Python n'est pas installé** (utiliser `node -e` pour les scripts).
 - Les heredocs bash contenant beaucoup de backticks/apostrophes ont cassé une fois → préférer l'outil Write pour les fichiers.
 - `gh` n'est pas dans le PATH : `"/c/Program Files/GitHub CLI/gh.exe"`. Il est connecté au compte Nicknamezotb (keyring).
@@ -105,5 +113,5 @@ Pas de serveur : l'admin lit et écrit le repo via l'API GitHub, depuis le navig
 - Photos importées de l'ancien site Adobe le 2026-10-20 (≈520, IDs `a-<uuid>` dans public/media, ~189 Mo). Photo d'accueil = une photo du Pérou choisie par défaut.
 - BAIANA : année « 2025-2026 » (confirmé par Quentin).
 - Quentin ne veut **pas** de collaborateur (Martin) : projet perso, repo réservé à lui.
-- Préférences de Quentin : **pas de zoom sur les images** (ni survol ni défilement : seulement fondus et parallaxe légère) ; pas de jaune ; rendu moderne, épuré, typographie pas trop grosse ; thème clair ; tout doit être modifiable depuis l'admin ; il veut être le seul administrateur.
+- Préférences de Quentin : pas de grands vides, pas de traits/séparateurs « archaïques », pas d'éléments décoratifs inutiles ; **pas de zoom sur les images** (ni survol ni défilement : seulement fondus et parallaxe légère) ; pas de jaune ; rendu moderne, épuré, typographie pas trop grosse ; thème clair ; tout doit être modifiable depuis l'admin ; il veut être le seul administrateur.
 - Bouton Publier de l'admin testé et fonctionnel par Quentin (2026-10).
