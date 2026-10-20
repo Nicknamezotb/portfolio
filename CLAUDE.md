@@ -15,7 +15,7 @@ Quentin échange en français, avec un langage familier ; il n'est pas développ
 | Photos publiées | `public/media/<id>.webp` + `<id>-sm.webp` (vignette), dans le repo |
 | Vidéos | YouTube (chaîne @qg.production), seulement les ID dans content.json |
 | Photos de démo | picsum.photos, générées à la volée tant qu'une liste de photos est vide |
-| Formulaire de contact | Formspree si `settings.formspreeId` est rempli (vide pour l'instant), sinon repli mailto |
+| Formulaire de contact | Formspree si `settings.formspreeId` est rempli (vide pour l’instant), sinon repli mailto. Adresse jamais en clair dans le HTML : boutons « Copier mon e-mail » (`data-copy-email`, encodage dans `src/lib/email.ts`) |
 | Polices | auto-hébergées via @fontsource (Bebas Neue titres, Inter texte, DM Sans petits textes via `--font-mono` — Quentin trouvait JetBrains Mono « trop IA ») |
 
 Pas de domaine perso pour l'instant. Pour en ajouter un : `site` et `base: '/'` dans `astro.config.mjs` + fichier `public/CNAME`.

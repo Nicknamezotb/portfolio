@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { content } from '../lib/media';
+import { encodeEmail } from '../lib/email';
 const { settings } = content;
 const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspreeId}` : '';
 ---
@@ -14,13 +15,13 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
     <div class="layout">
       <aside>
         <p class="lede">Un tournage, un événement à couvrir, une identité visuelle ? Écris-moi, je réponds rapidement.</p>
-        <a href={`mailto:${settings.email}`} class="email">{settings.email}</a>
+        <button type="button" class="email" data-copy-email data-e={encodeEmail(settings.email)}><span class="ce-label">Copier mon e-mail</span></button>
         <ul>
           {settings.socials.map((s) => <li><a href={s.url} target="_blank" rel="noopener" class="link-arrow">{s.label} <span>↗</span></a></li>)}
         </ul>
       </aside>
 
-      <form id="contact" action={action} method="POST" data-email={settings.email}>
+      <form id="contact" action={action} method="POST" data-e={encodeEmail(settings.email)}>
         <label><span class="mono">Nom</span><input name="name" autocomplete="name" required /></label>
         <label><span class="mono">E-mail</span><input name="email" type="email" autocomplete="email" required /></label>
         <label><span class="mono">Message</span><textarea name="message" rows="6" required></textarea></label>
@@ -35,7 +36,10 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
 <style>
   .layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(40px, 7vw, 112px); }
   .lede { margin-top: 0; }
-  .email { display: inline-block; font-size: clamp(17px, 1.6vw, 21px); margin: 12px 0 28px; border-bottom: 1px solid var(--line); transition: color .3s, border-color .3s; }
+  .email {
+    display: inline-block; font: inherit; font-size: clamp(16px, 1.4vw, 18px); color: inherit; background: none; cursor: pointer;
+    border: 0; border-bottom: 1px solid var(--line); padding: 0 0 4px; margin: 12px 0 28px; transition: color .3s, border-color .3s;
+  }
   .email:hover { color: var(--accent); border-color: var(--accent); }
   ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 20px; }
   form { display: grid; gap: 24px; }
@@ -58,9 +62,11 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
 </style>
 
 <script>
+  import { decodeEmail } from '../lib/email';
   const form = document.getElementById('contact') as HTMLFormElement;
   const status = form.querySelector('.status')!;
   const btn = form.querySelector('button')!;
+  const email = decodeEmail(form.dataset.e!);
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(form);
@@ -68,7 +74,7 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
     if (!form.getAttribute('action')) {
       const subject = encodeURIComponent(`Contact portfolio : ${data.get('name')}`);
       const body = encodeURIComponent(`${data.get('message')}\n\n${data.get('name')} (${data.get('email')})`);
-      location.href = `mailto:${form.dataset.email}?subject=${subject}&body=${body}`;
+      location.href = `mailto:${email}?subject=${subject}&body=${body}`;
       return;
     }
     btn.disabled = true;
@@ -79,7 +85,7 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
       form.reset();
       status.textContent = 'Merci, ton message est bien parti. Je te réponds vite.';
     } catch {
-      status.textContent = `L'envoi a échoué. Écris-moi directement à ${form.dataset.email}.`;
+      status.textContent = `L'envoi a échoué. Écris-moi directement à ${email}.`;
     } finally {
       btn.disabled = false;
     }

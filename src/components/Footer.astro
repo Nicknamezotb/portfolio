@@ -1,5 +1,6 @@
 ---
 import { content, url } from '../lib/media';
+import { encodeEmail } from '../lib/email';
 const { settings } = content;
 ---
 <footer class="footer">
@@ -12,7 +13,7 @@ const { settings } = content;
       </div>
       <div class="cc-actions">
         <a href={url('/contact')} class="pill solid">Me contacter</a>
-        <a href={`mailto:${settings.email}`} class="pill">{settings.email}</a>
+        <button type="button" class="pill" data-copy-email data-e={encodeEmail(settings.email)}><span class="ce-label">Copier mon e-mail</span></button>
       </div>
     </div>
 
@@ -40,6 +41,7 @@ const { settings } = content;
 
   .cc-actions { display: flex; flex-wrap: wrap; gap: 10px; }
   .pill {
+    font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer;
     display: inline-flex; align-items: center; height: 46px; padding: 0 22px; border-radius: 999px;
     font-size: 14px; font-weight: 500; white-space: nowrap;
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 16%, transparent);
@@ -60,3 +62,8 @@ const { settings } = content;
     .bottom { flex-direction: column-reverse; align-items: flex-start; }
   }
 </style>
+
+<script>
+  import { initCopyEmail } from '../lib/email';
+  initCopyEmail();
+</script>
