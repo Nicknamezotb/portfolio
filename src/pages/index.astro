@@ -138,7 +138,11 @@ const entries = [
         heroText.style.opacity = String(1 - p);
         heroText.style.transform = p ? `translate3d(0, ${p * -40}px, 0)` : '';
         heroText.style.filter = p > 0.01 ? `blur(${p * 4}px)` : '';
-        if (heroBg) heroBg.style.transform = p ? `translate3d(0, ${p * vh * 0.1}px, 0)` : '';
+        if (heroBg) {
+          heroBg.style.transform = p ? `translate3d(0, ${p * vh * 0.1}px, 0)` : '';
+          // la photo s'estompe doucement en descendant, pour enchaîner sans rupture sur la suite
+          heroBg.style.opacity = p ? String(1 - p * 0.55) : '';
+        }
       }
 
       for (const el of fades) {
@@ -197,6 +201,17 @@ const entries = [
   }
   @keyframes settle { from { opacity: 0; } }
 
+  /* Transition longue et douce vers le reste de la page : la photo se fond progressivement dans la couleur du fond */
+  .hero:not(.bare)::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 48%; z-index: 1; pointer-events: none;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--bg) 18%, transparent) 30%,
+      color-mix(in srgb, var(--bg) 52%, transparent) 58%,
+      color-mix(in srgb, var(--bg) 86%, transparent) 82%,
+      var(--bg) 100%);
+  }
+
   /* Voile : verre dépoli teinté de la couleur du fond, qui s'efface vers la photo */
   .veil {
     position: absolute; inset: 0; width: min(780px, 62%);
@@ -241,7 +256,7 @@ const entries = [
   .side-right .ctas { justify-content: flex-end; }
 
   .caption {
-    position: absolute; z-index: 2; bottom: clamp(24px, 4vh, 40px); right: var(--gutter); margin: 0;
+    position: absolute; z-index: 2; top: 96px; right: var(--gutter); margin: 0;
     color: #fff; text-shadow: 0 1px 8px rgb(0 0 0 / .45);
   }
   .side-right .caption { right: auto; left: var(--gutter); }
