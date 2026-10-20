@@ -282,7 +282,7 @@ const entries = [
   .works-head .mono { margin: 0; order: 2; }
   .works-head h2 { font-size: clamp(40px, 5vw, 72px); }
 
-  .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2vw, 28px); max-width: 1120px; }
+  .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2vw, 28px); }
   .work { position: relative; display: block; opacity: 0; will-change: transform, opacity; }
   .work-media { aspect-ratio: 4 / 5; }
 
@@ -318,8 +318,9 @@ const entries = [
   .featured { padding-block: clamp(40px, 8vh, 100px) 0; }
   .feat {
     position: relative; display: block; overflow: hidden; opacity: 0;
-    width: calc(100% - 2 * var(--gutter)); max-width: 1560px; margin-inline: auto;
-    height: min(62svh, 580px); min-height: 420px; border-radius: 6px; max-width: 1320px;
+    /* même largeur et mêmes marges que la rangée de cartes au-dessus */
+    width: calc(100% - 2 * var(--gutter)); margin-inline: auto;
+    height: min(62svh, 580px); min-height: 420px; border-radius: 6px; max-width: calc(var(--max) - 2 * var(--gutter));
   }
   .feat-img { position: absolute; inset: -4% 0; width: 100%; height: 108%; object-fit: cover; will-change: transform; }
   .feat-veil {
