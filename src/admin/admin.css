@@ -267,7 +267,7 @@ input[type=range] { width: 100%; accent-color: var(--a-accent); }
 .cropper { height: auto; max-height: 92vh; }
 .crop-stage { padding: 8px 20px 16px; display: grid; place-items: center; background: #f1f0ec; flex: 1; min-height: 0; }
 .crop-frame {
-  position: relative; width: 100%; max-height: 62vh; max-width: calc(62vh * 2.4); overflow: hidden; border-radius: 6px;
+  position: relative; overflow: hidden; border-radius: 6px;
   cursor: grab; touch-action: none; user-select: none; background: #ddd; box-shadow: 0 8px 30px rgb(0 0 0 / .18);
 }
 .crop-frame:active { cursor: grabbing; }

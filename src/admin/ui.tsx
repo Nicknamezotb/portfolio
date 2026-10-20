@@ -418,7 +418,8 @@ function Cropper({ photo, aspect, onSave, onClose }: { photo: Photo; aspect: num
           <div
             ref={frame}
             class="crop-frame"
-            style={{ aspectRatio: String(aspect) }}
+            // largeur calculée à partir de la hauteur max : le cadre garde exactement le format du site
+            style={{ aspectRatio: String(aspect), width: `min(100%, calc(62vh * ${aspect}))` }}
             onPointerDown={down as any}
             onPointerMove={move as any}
             onPointerUp={up}
