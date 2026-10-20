@@ -76,8 +76,8 @@ export type Content = {
     cards: { photo: Photo | null; video: Photo | null; creations: Photo | null };
     featured: string;
   };
-  /** photo floutée en fond du haut des pages Photo, Vidéo et Créations */
-  pageBgs: { photo: Photo | null; video: Photo | null; creations: Photo | null };
+  /** photo floutée en fond du haut des pages Photo, Vidéo, Créations et Contact */
+  pageBgs: { photo: Photo | null; video: Photo | null; creations: Photo | null; contact: Photo | null };
   videos: VideoCategory[];
   galleries: Gallery[];
   creations: Creation[];

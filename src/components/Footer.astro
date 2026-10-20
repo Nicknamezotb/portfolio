@@ -1,11 +1,13 @@
 ---
 import { content, url } from '../lib/media';
-import { encodeEmail } from '../lib/email';
 const { settings } = content;
+// Pas d'encart « Travaillons ensemble » sur la page Contact elle-même
+const onContact = Astro.url.pathname.replace(/\/+$/, '').endsWith('/contact');
 ---
 <footer class="footer">
   <div class="wrap">
     <!-- Encart de contact : panneau arrondi et doux, sans trait de séparation -->
+    {!onContact && (
     <div class="contact-card reveal">
       <div class="cc-text">
         <p class="mono">Un projet, une collaboration ?</p>
@@ -13,9 +15,9 @@ const { settings } = content;
       </div>
       <div class="cc-actions">
         <a href={url('/contact')} class="pill solid">Me contacter</a>
-        <button type="button" class="pill" data-copy-email data-e={encodeEmail(settings.email)}><span class="ce-label">Copier mon e-mail</span></button>
       </div>
     </div>
+    )}
 
     <div class="bottom">
       <span class="mono">© {new Date().getFullYear()} {settings.name}</span>
@@ -63,7 +65,3 @@ const { settings } = content;
   }
 </style>
 
-<script>
-  import { initCopyEmail } from '../lib/email';
-  initCopyEmail();
-</script>

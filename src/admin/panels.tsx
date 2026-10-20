@@ -33,6 +33,8 @@ export function General() {
         />
       </Card>
 
+      <PageBg k="contact" label="Contact" />
+
       <Card title="Réseaux sociaux">
         <div class="field wide">
           <ItemList
@@ -192,7 +194,7 @@ export function Home() {
 
 /* ---------- Photo de fond floutée des pages Photo / Vidéo / Créations ---------- */
 
-function PageBg({ k, label }: { k: 'photo' | 'video' | 'creations'; label: string }) {
+function PageBg({ k, label }: { k: 'photo' | 'video' | 'creations' | 'contact'; label: string }) {
   const { content: c, set } = useStore();
   const p = c.pageBgs?.[k] ?? null;
   return (
@@ -202,7 +204,7 @@ function PageBg({ k, label }: { k: 'photo' | 'video' | 'creations'; label: strin
         single
         aspect={16 / 9}
         photos={p ? [p] : []}
-        onChange={(ph) => set((d) => { d.pageBgs = { photo: null, video: null, creations: null, ...d.pageBgs, [k]: ph[0] ?? null }; })}
+        onChange={(ph) => set((d) => { d.pageBgs = { photo: null, video: null, creations: null, contact: null, ...d.pageBgs, [k]: ph[0] ?? null }; })}
         hint="Affichée très floutée et estompée derrière le titre de la page, pour casser le fond uni. Sans photo, le fond reste uni. "
       />
     </Card>

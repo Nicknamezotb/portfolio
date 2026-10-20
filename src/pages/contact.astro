@@ -1,11 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import { content } from '../lib/media';
+import Backdrop from '../components/Backdrop.astro';
+import { content, single } from '../lib/media';
 import { encodeEmail } from '../lib/email';
 const { settings } = content;
 const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspreeId}` : '';
 ---
 <Base title="Contact" description={`Contacter ${settings.name}, ${settings.role.toLowerCase()}.`}>
+  <Backdrop photo={single(content.pageBgs?.contact ?? null)} />
   <div class="wrap">
     <header class="page-head">
       <h1 class="display">Parlons-en</h1>
@@ -63,7 +65,8 @@ const action = settings.formspreeId ? `https://formspree.io/f/${settings.formspr
 </style>
 
 <script>
-  import { decodeEmail } from '../lib/email';
+  import { decodeEmail, initCopyEmail } from '../lib/email';
+  initCopyEmail();
   const form = document.getElementById('contact') as HTMLFormElement;
   const status = form.querySelector('.status')!;
   const btn = form.querySelector('button')!;
