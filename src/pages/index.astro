@@ -45,10 +45,6 @@ const entries = [
           {rest.length > 0 && <span class="w">{rest.join(' ')}</span>}
         </h1>
         <p class="tagline">{home.tagline}</p>
-        <div class="ctas">
-          <a href={url('/photo')} class="link-arrow">Photos <span>→</span></a>
-          <a href={url('/video')} class="link-arrow">Vidéos <span>→</span></a>
-        </div>
       </div>
     </div>
 
@@ -247,10 +243,8 @@ const entries = [
   .hero h1 .w { display: block; animation: rise 1.2s var(--ease) both; }
   .hero h1 .w:nth-child(2) { animation-delay: .12s; }
   @keyframes rise { from { opacity: 0; transform: translateY(28px); } }
-  .tagline { text-shadow: var(--soft-shadow); margin: 26px 0 30px; font-size: 16px; line-height: 1.65; max-width: 36ch; animation: rise 1.2s .25s var(--ease) both; }
+  .tagline { text-shadow: var(--soft-shadow); margin: 26px 0 0; font-size: 16px; line-height: 1.65; max-width: 36ch; animation: rise 1.2s .25s var(--ease) both; }
   .side-right .tagline { margin-left: auto; }
-  .ctas { display: flex; gap: 28px; animation: rise 1.2s .35s var(--ease) both; }
-  .side-right .ctas { justify-content: flex-end; }
 
   .caption {
     position: absolute; z-index: 2; top: 96px; right: var(--gutter); margin: 0;
@@ -365,7 +359,7 @@ const entries = [
     }
     @keyframes veilUp { from { opacity: 0; transform: translateY(40px); } }
     .side-right .hero-inner { justify-content: flex-start; }
-    .side-right .hero-text, .side-right .kicker, .side-right .ctas { text-align: left; justify-content: flex-start; }
+    .side-right .hero-text, .side-right .kicker { text-align: left; justify-content: flex-start; }
     .side-right .tagline { margin-left: 0; }
     .caption, .side-right .caption { top: 84px; bottom: auto; right: var(--gutter); left: auto; }
   }
