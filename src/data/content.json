@@ -153,6 +153,7 @@
       "context": "IsepLive",
       "place": "ISEP",
       "year": "2026",
+      "description": "Je prends des photos de nombreux événements festifs : afterworks, soirées, etc. En tant que président d'IsepLive, l'association audiovisuelle de mon école, je gère des équipes chargées de couvrir ces événements en vidéo et en photo.",
       "related": "",
       "photos": [
         {
@@ -373,6 +374,7 @@
       "context": "",
       "place": "ISEP",
       "year": "2026",
+      "description": "J'ai réalisé la galerie photo d'un concert organisé par IsepBand, association de l'école d'ingénieur ISEP.",
       "related": "",
       "photos": [
         {
@@ -551,6 +553,7 @@
       "context": "",
       "place": "ESCP Business School",
       "year": "2026",
+      "description": "J'ai réalisé une galerie photo pour la conférence de Marco Landi, l'ex-président mondial d'Apple Computer, organisée par Andréa Follin, étudiant de l'ESCP Business School.",
       "related": "",
       "photos": [
         {
@@ -981,6 +984,7 @@
       "context": "",
       "place": "Paris",
       "year": "2025",
+      "description": "Diverses photos de Paris, la ville où j'ai grandi et découvert la photo.",
       "related": "",
       "photos": [
         {
@@ -1173,6 +1177,7 @@
       "context": "26 jours de voyage",
       "place": "Pérou",
       "year": "2025",
+      "description": "Un voyage de 26 jours pour découvrir le Pérou avec deux amis, Loïc et Luca. Réalisation d'un documentaire et avant-première au cinéma Club de l'Étoile à Paris.",
       "related": "/projets/machu-picchu",
       "photos": [
         {
@@ -3017,6 +3022,7 @@
       "context": "Autour de Naples",
       "place": "Naples",
       "year": "2025",
+      "description": "Vacances en famille autour de Naples.",
       "related": "",
       "photos": [
         {

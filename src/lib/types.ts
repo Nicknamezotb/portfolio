@@ -21,6 +21,7 @@ export type Gallery = {
   context: string;
   place: string;
   year: string;
+  description: string;  // texte affiché en haut de la galerie
   related: string;
   photos: Photo[];
 };

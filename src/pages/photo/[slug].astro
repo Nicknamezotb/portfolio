@@ -24,6 +24,7 @@ const label = [g.place, g.year].filter(Boolean).join(' · ');
         {label && <span>{label}</span>}
         <span>{list.length} photos</span>
       </p>
+      {g.description && <p class="lede desc">{g.description}</p>}
     </header>
 
     <PhotoGrid photos={list} label={g.title} />
@@ -41,6 +42,7 @@ const label = [g.place, g.year].filter(Boolean).join(' · ');
 </Base>
 
 <style>
+  .desc { margin: 24px 0 0; }
   .info { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 18px 0 0; }
   .after { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-top: clamp(48px, 8vh, 96px); }
   .next { margin-left: auto; text-align: right; display: flex; flex-direction: column; gap: 6px; }

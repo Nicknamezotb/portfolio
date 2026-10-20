@@ -236,7 +236,7 @@ export function Galleries() {
         title={(g) => g.title || 'Galerie sans titre'}
         meta={(g) => `${g.photos.length} photo${g.photos.length > 1 ? 's' : ''}${g.year ? ' · ' + g.year : ''}`}
         thumb={(g) => (g.photos[0] ? imgUrl(g.photos[0]) : undefined)}
-        create={() => ({ slug: `galerie-${Date.now().toString(36).slice(-4)}`, title: 'Nouvelle galerie', context: '', place: '', year: String(new Date().getFullYear()), related: '', photos: [] })}
+        create={() => ({ slug: `galerie-${Date.now().toString(36).slice(-4)}`, title: 'Nouvelle galerie', context: '', place: '', year: String(new Date().getFullYear()), description: '', related: '', photos: [] })}
         addLabel="Ajouter une galerie"
         confirmDelete={(g) => `Supprimer la galerie « ${g.title} » et ses ${g.photos.length} photos ? (définitif après publication)`}
         render={(g, up) => (
@@ -247,6 +247,7 @@ export function Galleries() {
             <Field label="Lieu" value={g.place} onChange={(v) => up((x) => (x.place = v))} />
             <Field label="Année" value={g.year} onChange={(v) => up((x) => (x.year = v))} />
             <Field label="Lien vers un projet (optionnel)" value={g.related} onChange={(v) => up((x) => (x.related = v))} placeholder="/projets/machu-picchu" />
+            <Area label="Description" rows={3} value={g.description} onChange={(v) => up((x) => (x.description = v))} placeholder="Quelques lignes affichées en haut de la galerie" />
             <PhotoManager photos={g.photos} onChange={(p) => up((x) => (x.photos = p))} />
           </div>
         )}
