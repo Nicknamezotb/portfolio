@@ -96,8 +96,9 @@ Pas de serveur : l'admin lit et écrit le repo via l'API GitHub, depuis le navig
 
 ## Contenu et décisions
 
-- 6 galeries, 10 vidéos (4 catégories), 3 créations (BAIANA, NEVERA, EXALTE), 1 projet (Machu Picchu). Toutes les galeries sont encore vides (photos de démo).
-- Les vraies photos de l'ancien site Adobe n'ont pas été récupérées (proposé, pas encore accepté).
-- Année de BAIANA incertaine (2026 sur une page de l'ancien site, 2025 sur une autre) : 2026 retenu, à confirmer avec Quentin.
+- 6 galeries, 10 vidéos (4 catégories), 3 créations (BAIANA, NEVERA, EXALTE), 1 projet (Machu Picchu).
+- Photos importées de l'ancien site Adobe le 2026-10-20 (≈520, IDs `a-<uuid>` dans public/media, ~189 Mo). Photo d'accueil = une photo du Pérou choisie par défaut.
+- BAIANA : année « 2025-2026 » (confirmé par Quentin).
+- Quentin ne veut **pas** de collaborateur (Martin) : projet perso, repo réservé à lui.
 - Préférences de Quentin : pas de jaune ; rendu moderne, épuré, typographie pas trop grosse ; thème clair ; tout doit être modifiable depuis l'admin ; il veut être le seul administrateur.
-- État : le bouton Publier de l'admin n'a pas encore été testé avec un vrai jeton (attente du premier essai de Quentin).
+- Bouton Publier de l'admin testé et fonctionnel par Quentin (2026-10).
