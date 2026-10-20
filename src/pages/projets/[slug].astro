@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Backdrop from '../../components/Backdrop.astro';
 import PhotoGrid from '../../components/PhotoGrid.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
-import { content, url, photos, cover, rich } from '../../lib/media';
+import { content, url, photos, cover, rich, cropStyle } from '../../lib/media';
 
 export function getStaticPaths() {
   return content.projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
@@ -16,9 +16,14 @@ const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((
 <Base title={p.title} description={paragraphs[0]?.replace(/\*\*/g, '').slice(0, 160)}>
   <Backdrop photo={backdrop} />
   <div class="wrap">
-    <header class="page-head">
-      <h1 class="display">{p.title}</h1>
-      {meta && <span class="mono">{meta}</span>}
+    <!-- En-tête : grande photo de couverture, titre incrusté (même esprit que « À la une ») -->
+    <header class:list={['banner', { 'no-img': !backdrop }]}>
+      {backdrop && <img class="banner-img" src={backdrop.src ?? backdrop.thumb} style={cropStyle(backdrop)} alt="" fetchpriority="high" />}
+      <div class="banner-veil" aria-hidden="true"></div>
+      <div class="banner-text">
+        {meta && <span class="mono">{meta}</span>}
+        <h1 class="display">{p.title}</h1>
+      </div>
     </header>
 
     <!-- Texte et vidéo côte à côte : pas de grand vide à gauche du texte -->
@@ -53,7 +58,24 @@ const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((
 </Base>
 
 <style>
-  .intro { display: grid; gap: clamp(28px, 4vw, 56px); align-items: start; }
+  /* ---------- En-tête ---------- */
+  .banner {
+    position: relative; overflow: hidden; border-radius: 8px; margin-top: 88px;
+    height: clamp(320px, 52vh, 560px); background: var(--raised);
+    box-shadow: 0 30px 60px -36px rgb(0 0 0 / .45);
+  }
+  .banner.no-img { height: auto; background: none; box-shadow: none; }
+  .banner-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: bnIn 1.4s var(--ease-out) both; }
+  @keyframes bnIn { from { opacity: 0; } }
+  .banner-veil { position: absolute; inset: 0; background: linear-gradient(to top, rgb(10 11 14 / .62) 0%, rgb(10 11 14 / .18) 45%, transparent 70%); }
+  .no-img .banner-veil { display: none; }
+  .banner-text { position: absolute; left: clamp(20px, 3.5vw, 48px); right: 20px; bottom: clamp(20px, 3.5vw, 44px); color: #fff; display: grid; gap: 12px; justify-items: start; }
+  .no-img .banner-text { position: static; color: var(--text); padding-top: 24px; }
+  .banner-text .mono { color: rgb(255 255 255 / .85); margin: 0; }
+  .no-img .banner-text .mono { color: var(--muted); }
+  .banner-text h1 { font-size: clamp(44px, 6.5vw, 96px); margin: 0 0 0 -0.045em; line-height: .9; text-shadow: 0 2px 24px rgb(0 0 0 / .25); }
+
+  .intro { margin-top: clamp(32px, 5vh, 56px); display: grid; gap: clamp(28px, 4vw, 56px); align-items: start; }
   .intro.has-video { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .text p { margin: 0 0 1em; font-size: clamp(15px, 1.15vw, 17px); line-height: 1.75; color: color-mix(in srgb, var(--text) 82%, var(--bg)); max-width: 58ch; }
   .text p:last-child { margin-bottom: 0; }
@@ -72,12 +94,13 @@ const backdrop = p.cover ? cover([p.cover], p.slug) : cover(p.sections.flatMap((
   .caption .mono { margin: 0; }
 
   /* Sections de photos plus compactes */
-  .block { margin-top: clamp(48px, 8vh, 88px); }
-  .block-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .block { margin-top: clamp(40px, 6vh, 64px); }
+  .block-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
   .block-head h2 { font-size: clamp(26px, 2.6vw, 34px); }
-  .more { margin-top: clamp(32px, 5vh, 56px); }
+  .more { margin-top: clamp(28px, 4vh, 44px); }
 
   @media (max-width: 860px) {
     .intro.has-video { grid-template-columns: 1fr; }
+    .banner { margin-top: 76px; height: 46vh; }
   }
 </style>
