@@ -167,9 +167,9 @@ img { display: block; max-width: 100%; }
 
 /* ---------- Photos ---------- */
 .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-.photo-grid.single { grid-template-columns: minmax(0, 360px); }
+.photo-grid.single { grid-template-columns: minmax(0, 520px); }
 .photo-grid figure { position: relative; margin: 0; aspect-ratio: 1; border-radius: 6px; overflow: hidden; background: #eceae5; cursor: grab; }
-.photo-grid.single figure { aspect-ratio: 16/9; cursor: default; }
+.photo-grid.single figure { cursor: default; }
 .photo-grid figure.dragging { opacity: .35; }
 .photo-grid img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .photo-grid .icon { position: absolute; top: 4px; right: 4px; background: rgb(255 255 255 / .92); width: 24px; height: 24px; opacity: 0; transition: opacity .15s; }

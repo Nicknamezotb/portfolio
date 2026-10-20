@@ -228,6 +228,8 @@ export function PhotoManager({ label = 'Photos', photos, onChange, single, hint,
               key={p.src}
               draggable={!single}
               class={drag === i ? 'dragging' : ''}
+              // aperçu au format réel du site (photo unique : couverture, fond, carte…)
+              style={single ? { aspectRatio: String(cropAspect), width: `min(100%, calc(300px * ${cropAspect}))` } : undefined}
               onDragStart={(e) => { setDrag(i); e.dataTransfer!.effectAllowed = 'move'; }}
               onDragEnter={() => reorder(i)}
               onDragOver={(e) => e.preventDefault()}
