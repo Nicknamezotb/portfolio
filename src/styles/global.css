@@ -66,8 +66,7 @@ button { font: inherit; color: inherit; }
 .section { padding-block: clamp(48px, 8vh, 96px); }
 .section-title {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  border-top: 1px solid var(--line);
-  padding-top: 16px; margin-bottom: clamp(24px, 3vw, 36px);
+  margin-bottom: clamp(24px, 3vw, 36px);
 }
 .section-title h2 { font-size: clamp(26px, 2.6vw, 34px); }
 
